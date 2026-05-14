@@ -1,0 +1,1770 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Coursly — POS Demo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.44.0/tabler-icons.min.css">
+<style>
+:root {
+  --bg: #F7F5F0;
+  --surface: #FFFFFF;
+  --surface2: #F2EFE9;
+  --border: rgba(0,0,0,0.08);
+  --border2: rgba(0,0,0,0.14);
+  --text: #1A1814;
+  --text2: #6B6760;
+  --text3: #A8A49E;
+  --accent: #1B4D3E;
+  --accent-light: #E8F2EE;
+  --accent-mid: #5A9B82;
+  --amber: #C97B2F;
+  --amber-light: #FDF3E7;
+  --red: #C0392B;
+  --red-light: #FDECEA;
+  --purple: #5B4FCF;
+  --purple-light: #EEEDFB;
+  --blue: #2563EB;
+  --blue-light: #EFF6FF;
+  --font: 'DM Sans', sans-serif;
+  --mono: 'DM Mono', monospace;
+  --r-sm: 8px;
+  --r-md: 12px;
+  --r-lg: 16px;
+  --r-xl: 24px;
+  --r-full: 999px;
+  --shadow: 0 2px 12px rgba(0,0,0,0.08);
+  --shadow-lg: 0 8px 32px rgba(0,0,0,0.12);
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: var(--font); background: var(--bg); color: var(--text); min-height: 100vh; overflow-x: hidden; }
+
+/* ── LAUNCHER ── */
+.launcher { min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 40px 20px; gap: 48px; }
+.launcher-brand { text-align: center; }
+.launcher-logo { font-size: 36px; font-weight: 600; color: var(--accent); letter-spacing: -1px; }
+.launcher-logo span { color: var(--amber); }
+.launcher-tagline { font-size: 15px; color: var(--text2); margin-top: 6px; }
+.device-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; max-width: 760px; width: 100%; }
+.device-card { background: var(--surface); border: 1.5px solid var(--border); border-radius: var(--r-xl); padding: 28px 20px; cursor: pointer; text-align: center; transition: all 0.2s; }
+.device-card:hover { border-color: var(--accent); transform: translateY(-2px); box-shadow: var(--shadow-lg); }
+.device-card.active { border-color: var(--accent); background: var(--accent-light); }
+.dc-icon { font-size: 36px; color: var(--accent); margin-bottom: 12px; }
+.dc-name { font-size: 16px; font-weight: 500; color: var(--text); }
+.dc-desc { font-size: 12px; color: var(--text2); margin-top: 4px; }
+.launcher-screens { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; max-width: 760px; width: 100%; }
+.screen-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--r-md); padding: 12px 14px; cursor: pointer; transition: all 0.15s; }
+.screen-card:hover { border-color: var(--accent); background: var(--accent-light); }
+.sc-label { font-size: 11px; font-weight: 500; color: var(--text2); text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 4px; }
+.sc-name { font-size: 13px; font-weight: 500; color: var(--text); }
+.launch-btn { background: var(--accent); color: white; border: none; border-radius: var(--r-full); padding: 14px 40px; font-size: 15px; font-weight: 500; cursor: pointer; font-family: var(--font); transition: all 0.2s; }
+.launch-btn:hover { background: #163d31; transform: translateY(-1px); }
+
+/* ── DEMO SHELL ── */
+.demo-shell { display: none; flex-direction: column; height: 100vh; }
+.demo-topbar { background: var(--text); color: white; padding: 10px 16px; display: flex; align-items: center; justify-content: space-between; flex-shrink: 0; gap: 12px; flex-wrap: wrap; z-index: 100; }
+.demo-brand { font-size: 15px; font-weight: 600; color: white; letter-spacing: -0.3px; }
+.demo-brand span { color: #C9AA72; }
+.demo-nav { display: flex; gap: 4px; flex-wrap: wrap; }
+.demo-nav-btn { padding: 5px 10px; border-radius: var(--r-full); font-size: 11px; font-weight: 500; cursor: pointer; border: 1px solid rgba(255,255,255,0.2); color: rgba(255,255,255,0.7); background: transparent; font-family: var(--font); transition: all 0.15s; white-space: nowrap; }
+.demo-nav-btn:hover { background: rgba(255,255,255,0.1); color: white; }
+.demo-nav-btn.on { background: white; color: var(--text); }
+.demo-device-toggle { display: flex; gap: 4px; }
+.ddt-btn { width: 28px; height: 28px; border-radius: var(--r-sm); border: 1px solid rgba(255,255,255,0.2); background: transparent; color: rgba(255,255,255,0.6); cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 14px; transition: all 0.15s; }
+.ddt-btn.on { background: white; color: var(--text); }
+.demo-back { padding: 5px 10px; border-radius: var(--r-full); font-size: 11px; border: 1px solid rgba(255,255,255,0.2); color: rgba(255,255,255,0.7); background: transparent; cursor: pointer; font-family: var(--font); }
+.demo-viewport { flex: 1; display: flex; align-items: center; justify-content: center; overflow: hidden; padding: 20px; background: var(--bg); }
+
+/* ── DEVICE FRAMES ── */
+.device-frame { background: #1A1814; border-radius: 44px; padding: 12px; box-shadow: 0 24px 80px rgba(0,0,0,0.35); position: relative; transition: all 0.3s; }
+.device-frame.mobile { width: 375px; }
+.device-frame.tablet { width: 768px; max-width: calc(100vw - 40px); }
+.device-frame.laptop { width: min(1100px, calc(100vw - 40px)); border-radius: 16px; padding: 8px 8px 28px; }
+.device-frame.laptop::after { content: ''; position: absolute; bottom: 4px; left: 50%; transform: translateX(-50%); width: 80px; height: 6px; background: #2a2825; border-radius: 3px; }
+.device-screen { background: var(--surface); border-radius: 32px; overflow: hidden; position: relative; }
+.device-frame.mobile .device-screen { height: calc(100vh - 160px); max-height: 720px; }
+.device-frame.tablet .device-screen { height: calc(100vh - 160px); max-height: 900px; }
+.device-frame.laptop .device-screen { height: calc(100vh - 160px); max-height: 660px; border-radius: 8px; }
+.screen-inner { height: 100%; overflow-y: auto; overflow-x: hidden; scrollbar-width: thin; scrollbar-color: var(--border2) transparent; }
+
+/* ── SHARED COMPONENTS ── */
+.status-bar { padding: 10px 18px 4px; display: flex; justify-content: space-between; font-size: 11px; color: var(--text2); font-family: var(--mono); flex-shrink: 0; }
+.page { display: none; flex-direction: column; min-height: 100%; animation: fadeIn 0.2s ease; }
+.page.active { display: flex; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
+.page-hdr { padding: 12px 16px 10px; border-bottom: 1px solid var(--border); flex-shrink: 0; background: var(--surface); }
+.page-title { font-size: 17px; font-weight: 600; color: var(--text); }
+.page-sub { font-size: 12px; color: var(--text2); margin-top: 2px; }
+.scrollable { flex: 1; overflow-y: auto; padding: 12px 16px; }
+.btn-primary { background: var(--accent); color: white; border: none; border-radius: var(--r-full); padding: 13px 20px; font-size: 14px; font-weight: 500; cursor: pointer; font-family: var(--font); display: flex; align-items: center; justify-content: space-between; width: 100%; transition: all 0.15s; }
+.btn-primary:hover { background: #163d31; }
+.bottom-bar { padding: 10px 14px; border-top: 1px solid var(--border); background: var(--surface); flex-shrink: 0; }
+.chip { display: inline-flex; align-items: center; gap: 4px; padding: 3px 9px; border-radius: var(--r-full); font-size: 11px; font-weight: 500; }
+.chip-green { background: var(--accent-light); color: var(--accent); }
+.chip-amber { background: var(--amber-light); color: var(--amber); }
+.chip-red { background: var(--red-light); color: var(--red); }
+.chip-purple { background: var(--purple-light); color: var(--purple); }
+.chip-blue { background: var(--blue-light); color: var(--blue); }
+.chip-gray { background: var(--surface2); color: var(--text2); }
+.sec-label { font-size: 10px; font-weight: 500; color: var(--text2); text-transform: uppercase; letter-spacing: 0.05em; margin: 12px 0 7px; }
+.divider { height: 1px; background: var(--border); margin: 10px 0; }
+.card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--r-lg); padding: 12px; margin-bottom: 8px; }
+.card.accent { border-color: var(--accent-mid); }
+.metric-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--r-lg); padding: 12px; }
+.mc-label { font-size: 11px; color: var(--text2); margin-bottom: 4px; }
+.mc-value { font-size: 22px; font-weight: 600; color: var(--text); line-height: 1; }
+.mc-delta { font-size: 11px; margin-top: 4px; }
+.mc-delta.up { color: var(--accent); }
+.mc-delta.down { color: var(--red); }
+
+/* ── MOBILE MENU SCREEN ── */
+.menu-top-strip { display: flex; align-items: center; border-bottom: 1px solid var(--border); background: var(--surface); padding: 7px 14px; gap: 8px; overflow-x: auto; scrollbar-width: none; flex-shrink: 0; }
+.menu-top-strip::-webkit-scrollbar { display: none; }
+.top-seg { display: flex; align-items: center; gap: 5px; padding: 5px 10px; border-radius: var(--r-full); font-size: 11px; font-weight: 500; cursor: pointer; white-space: nowrap; }
+.top-seg.tab { background: var(--blue-light); color: var(--blue); }
+.top-seg.loyalty { background: var(--purple-light); color: var(--purple); }
+.top-seg.perso { background: var(--surface2); color: var(--text2); border: 1px solid var(--border); }
+.cat-row { display: flex; gap: 6px; padding: 8px 14px; overflow-x: auto; scrollbar-width: none; flex-shrink: 0; }
+.cat-row::-webkit-scrollbar { display: none; }
+.cat-pill { padding: 5px 12px; border-radius: var(--r-full); font-size: 12px; white-space: nowrap; cursor: pointer; border: 1px solid var(--border); background: var(--surface); color: var(--text2); transition: all 0.15s; }
+.cat-pill.on { background: var(--text); color: white; border-color: var(--text); }
+.menu-item { display: flex; align-items: center; gap: 10px; padding: 10px 0; border-bottom: 1px solid var(--border); cursor: pointer; }
+.menu-item:last-child { border-bottom: none; }
+.item-thumb { width: 52px; height: 52px; border-radius: var(--r-md); background: var(--surface2); display: flex; align-items: center; justify-content: center; font-size: 22px; flex-shrink: 0; border: 1px solid var(--border); position: relative; }
+.item-thumb .video-dot { position: absolute; bottom: 2px; right: 2px; background: rgba(0,0,0,0.45); border-radius: 3px; width: 14px; height: 14px; display: flex; align-items: center; justify-content: center; }
+.item-info { flex: 1; min-width: 0; }
+.item-name { font-size: 13px; font-weight: 500; color: var(--text); }
+.item-desc { font-size: 11px; color: var(--text2); margin-top: 1px; }
+.item-diet { display: flex; gap: 3px; margin-top: 3px; }
+.add-btn { width: 28px; height: 28px; border-radius: 50%; background: var(--text); color: white; border: none; font-size: 18px; cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; transition: transform 0.1s; }
+.add-btn:active { transform: scale(0.9); }
+.add-btn:disabled { opacity: 0.25; cursor: default; }
+.price { font-size: 13px; font-weight: 500; color: var(--text); flex-shrink: 0; }
+.split-cart { display: flex; gap: 7px; }
+.tab-pill { display: flex; align-items: center; gap: 5px; background: var(--surface2); border: 1px solid var(--border); border-radius: var(--r-md); padding: 0 12px; font-size: 13px; font-weight: 500; color: var(--text); flex-shrink: 0; height: 44px; cursor: pointer; }
+.send-btn { flex: 1; background: var(--text); color: white; border: none; border-radius: var(--r-md); padding: 0 14px; font-size: 13px; font-weight: 500; cursor: pointer; font-family: var(--font); height: 44px; display: flex; align-items: center; justify-content: space-between; }
+.new-badge { background: rgba(255,255,255,0.2); border-radius: var(--r-full); padding: 2px 8px; font-size: 11px; }
+.join-strip { margin: 0 14px 8px; border: 1px dashed var(--border2); border-radius: var(--r-md); padding: 7px 12px; display: flex; align-items: center; justify-content: space-between; font-size: 12px; flex-shrink: 0; }
+.join-btn { font-size: 11px; font-weight: 500; color: var(--purple); background: var(--purple-light); border: none; border-radius: var(--r-full); padding: 3px 10px; cursor: pointer; font-family: var(--font); }
+
+/* ── ITEM DETAIL ── */
+.media-hero { width: 100%; height: 160px; background: var(--surface2); display: flex; align-items: center; justify-content: center; font-size: 64px; position: relative; flex-shrink: 0; }
+.media-dots { position: absolute; bottom: 8px; left: 50%; transform: translateX(-50%); display: flex; gap: 5px; }
+.mdot { width: 5px; height: 5px; border-radius: 50%; background: rgba(0,0,0,0.2); }
+.mdot.on { width: 14px; border-radius: 3px; background: var(--accent); }
+.vid-chip { position: absolute; top: 8px; left: 10px; background: rgba(0,0,0,0.45); color: white; font-size: 10px; border-radius: 4px; padding: 2px 7px; }
+.detail-body { padding: 12px 14px; }
+.item-title { font-size: 18px; font-weight: 600; color: var(--text); }
+.big-price { font-size: 20px; font-weight: 600; color: var(--text); margin-top: 4px; }
+.deal-tag { font-size: 11px; color: var(--accent); font-weight: 500; }
+.desc-text { font-size: 12px; color: var(--text2); line-height: 1.5; margin-top: 7px; }
+.ing-grid { display: flex; flex-wrap: wrap; gap: 5px; }
+.ing-chip { padding: 4px 9px; border-radius: var(--r-full); font-size: 11px; cursor: pointer; border: 1px solid var(--border); background: var(--surface2); color: var(--text); transition: all 0.15s; user-select: none; }
+.ing-chip.removed { background: var(--red-light); border-color: #f5a0a0; color: var(--red); text-decoration: line-through; }
+.ing-chip.side { background: var(--amber-light); border-color: #f0c080; color: var(--amber); }
+.mod-row { display: flex; align-items: center; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid var(--border); }
+.mod-row:last-child { border-bottom: none; }
+.radio { width: 17px; height: 17px; border-radius: 50%; border: 1.5px solid var(--border2); background: var(--surface); display: flex; align-items: center; justify-content: center; cursor: pointer; flex-shrink: 0; }
+.radio.on { border-color: var(--accent); background: var(--accent); }
+.radio.on::after { content: ''; width: 5px; height: 5px; border-radius: 50%; background: white; }
+.chk { width: 17px; height: 17px; border-radius: 4px; border: 1.5px solid var(--border2); background: var(--surface); display: flex; align-items: center; justify-content: center; cursor: pointer; flex-shrink: 0; font-size: 10px; color: white; }
+.chk.on { border-color: var(--accent); background: var(--accent); }
+.mod-name { font-size: 12px; color: var(--text); }
+.mod-price { font-size: 11px; color: var(--text2); }
+.notes-field { width: 100%; border: 1px solid var(--border); border-radius: var(--r-md); padding: 8px 10px; font-size: 12px; color: var(--text); background: var(--surface); resize: none; height: 46px; font-family: var(--font); }
+.notes-field::placeholder { color: var(--text3); }
+.course-row { display: flex; gap: 5px; }
+.course-btn { flex: 1; padding: 7px 4px; border-radius: var(--r-md); border: 1px solid var(--border); background: var(--surface); font-size: 10px; color: var(--text2); cursor: pointer; text-align: center; font-family: var(--font); }
+.course-btn.on { border-color: var(--text); background: var(--text); color: white; }
+.qty-ctrl { display: flex; align-items: center; border: 1px solid var(--border); border-radius: var(--r-md); overflow: hidden; flex-shrink: 0; }
+.qty-btn { width: 34px; height: 44px; background: var(--surface2); border: none; font-size: 18px; cursor: pointer; color: var(--text); display: flex; align-items: center; justify-content: center; }
+.qty-num { width: 28px; text-align: center; font-size: 14px; font-weight: 500; }
+.pair-chip { background: var(--surface2); border: 1px solid var(--border); border-radius: var(--r-md); padding: 5px 9px; font-size: 11px; color: var(--text); cursor: pointer; display: flex; align-items: center; gap: 4px; }
+.pair-chips { display: flex; gap: 5px; flex-wrap: wrap; }
+
+/* ── PAYMENT ── */
+.check-line { display: flex; align-items: flex-start; justify-content: space-between; padding: 7px 0; border-bottom: 1px solid var(--border); }
+.check-line:last-child { border-bottom: none; }
+.cl-name { font-size: 13px; color: var(--text); }
+.cl-mod { font-size: 11px; color: var(--text2); margin-top: 1px; }
+.cl-price { font-size: 13px; font-weight: 500; color: var(--text); flex-shrink: 0; }
+.totals-box { background: var(--surface2); border-radius: var(--r-md); padding: 10px; margin-top: 8px; }
+.tot-row { display: flex; justify-content: space-between; font-size: 13px; padding: 3px 0; color: var(--text2); }
+.tot-row.grand { font-size: 15px; font-weight: 600; color: var(--text); padding-top: 8px; margin-top: 4px; border-top: 1px solid var(--border); }
+.tip-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; }
+.tip-btn { padding: 9px 4px; border-radius: var(--r-md); border: 1px solid var(--border); background: var(--surface); font-size: 12px; font-weight: 500; color: var(--text); cursor: pointer; text-align: center; font-family: var(--font); }
+.tip-btn.on { background: var(--text); color: white; border-color: var(--text); }
+.tip-sub { font-size: 10px; color: var(--text2); margin-top: 2px; }
+.tip-btn.on .tip-sub { color: rgba(255,255,255,0.6); }
+.pay-method { display: flex; align-items: center; gap: 10px; padding: 12px 14px; border-radius: var(--r-md); border: 1px solid var(--border); background: var(--surface); cursor: pointer; margin-bottom: 7px; font-size: 13px; font-weight: 500; color: var(--text); }
+.pay-method.dark { background: #111; color: white; border-color: #111; }
+.pay-method.google { background: #2563EB; color: white; border-color: #2563EB; }
+.pay-method.primary { background: var(--accent); color: white; border-color: var(--accent); }
+.pay-icon { width: 28px; height: 28px; border-radius: var(--r-sm); background: rgba(255,255,255,0.15); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.confirm-screen { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 32px 20px; text-align: center; flex: 1; }
+.confirm-icon { width: 60px; height: 60px; border-radius: 50%; background: var(--accent-light); display: flex; align-items: center; justify-content: center; margin: 0 auto 16px; }
+.confirm-title { font-size: 20px; font-weight: 600; color: var(--text); }
+.confirm-sub { font-size: 13px; color: var(--text2); margin-top: 6px; line-height: 1.5; }
+
+/* ── STAFF ORDER SCREEN ── */
+.floor-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; }
+.table-card { border-radius: var(--r-lg); padding: 10px 11px; cursor: pointer; border: 1.5px solid transparent; position: relative; transition: all 0.15s; }
+.table-card:hover { filter: brightness(0.97); }
+.table-card.available { background: var(--surface); border-color: var(--border); }
+.table-card.seated { background: var(--blue-light); border-color: #93c5fd; }
+.table-card.ordering { background: #f0fdf4; border-color: #86efac; }
+.table-card.ready { background: var(--accent-light); border-color: var(--accent-mid); }
+.table-card.check-drop { background: var(--amber-light); border-color: #fbbf24; }
+.tc-num { font-size: 15px; font-weight: 600; color: var(--text); }
+.tc-status { font-size: 10px; color: var(--text2); margin-top: 1px; }
+.tc-time { font-size: 11px; font-weight: 500; margin-top: 4px; }
+.tc-time.late { color: var(--red); }
+.tc-time.ok { color: var(--accent); }
+.tc-dot { position: absolute; top: 8px; right: 8px; width: 8px; height: 8px; border-radius: 50%; }
+.action-chips { display: flex; gap: 5px; flex-wrap: wrap; margin-top: 8px; }
+.act-chip { display: flex; align-items: center; gap: 4px; padding: 5px 9px; border-radius: var(--r-full); font-size: 11px; font-weight: 500; cursor: pointer; border: 1px solid var(--border); background: var(--surface2); color: var(--text); }
+.act-chip.fire { background: var(--blue-light); border-color: #93c5fd; color: var(--blue); }
+.act-chip.comp { background: var(--amber-light); border-color: #fbbf24; color: var(--amber); }
+.act-chip.danger { background: var(--red-light); border-color: #fca5a5; color: var(--red); }
+.act-chip.success { background: var(--accent-light); border-color: var(--accent-mid); color: var(--accent); }
+.order-item { display: flex; align-items: flex-start; gap: 8px; padding: 8px 0; border-bottom: 1px solid var(--border); }
+.order-item:last-child { border-bottom: none; }
+.seat-dot { width: 22px; height: 22px; border-radius: 50%; background: var(--surface2); border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 500; flex-shrink: 0; }
+.oi-name { font-size: 13px; font-weight: 500; color: var(--text); }
+.oi-mod { font-size: 11px; color: var(--text2); margin-top: 2px; }
+.oi-actions { display: flex; gap: 4px; margin-top: 4px; }
+.oi-btn { padding: 3px 7px; border-radius: var(--r-full); font-size: 10px; cursor: pointer; border: 1px solid var(--border); background: var(--surface); color: var(--text2); font-family: var(--font); }
+.oi-btn.fire { background: var(--blue-light); border-color: #93c5fd; color: var(--blue); }
+.oi-btn.comp { background: var(--red-light); border-color: #fca5a5; color: var(--red); }
+.status-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; margin-top: 4px; }
+.status-dot.pending { background: var(--text3); }
+.status-dot.accepted { background: var(--blue); }
+.status-dot.firing { background: var(--amber); }
+.status-dot.ready { background: var(--accent); }
+.status-dot.delivered { background: var(--border2); }
+
+/* ── STATION DISPLAY ── */
+.kds-wrap { background: var(--surface2); min-height: 100%; }
+.kds-header { background: var(--surface); border-bottom: 1px solid var(--border); padding: 10px 14px; display: flex; align-items: center; justify-content: space-between; }
+.kds-title { font-size: 14px; font-weight: 600; color: var(--text); display: flex; align-items: center; gap: 7px; }
+.live-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--accent); animation: pulse 2s infinite; }
+@keyframes pulse { 0%,100%{opacity:1;} 50%{opacity:0.4;} }
+.kds-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(175px, 1fr)); gap: 10px; padding: 10px; }
+.ticket { background: var(--surface); border: 1.5px solid var(--border); border-radius: var(--r-lg); overflow: hidden; }
+.ticket.expedite { border-color: var(--red); border-width: 2px; }
+.ticket.ready { border-color: var(--accent); border-width: 2px; opacity: 0.7; }
+.ticket-head { padding: 8px 10px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
+.ticket-head.exp-bg { background: var(--red-light); }
+.ticket-head.ok-bg { background: var(--surface2); }
+.ticket-head.ready-bg { background: var(--accent-light); }
+.t-name { font-size: 13px; font-weight: 600; color: var(--text); }
+.t-time { font-size: 11px; font-weight: 500; }
+.t-time.ok { color: var(--accent); }
+.t-time.late { color: var(--red); }
+.ticket-items { padding: 8px 10px; }
+.titem { display: flex; align-items: flex-start; gap: 7px; padding: 5px 0; border-bottom: 1px solid var(--border); cursor: pointer; }
+.titem:last-child { border-bottom: none; }
+.titem.done { opacity: 0.3; }
+.titem-qty { width: 18px; height: 18px; border-radius: 4px; background: var(--surface2); border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 500; flex-shrink: 0; }
+.titem-name { font-size: 12px; font-weight: 500; color: var(--text); }
+.titem-name.done { text-decoration: line-through; color: var(--text3); }
+.titem-mod { font-size: 10px; color: var(--text2); }
+.tcheck { width: 20px; height: 20px; border-radius: 50%; border: 1.5px solid var(--border2); margin-left: auto; flex-shrink: 0; display: flex; align-items: center; justify-content: center; }
+.tcheck.done { background: var(--accent); border-color: var(--accent); color: white; font-size: 10px; }
+.ticket-foot { display: flex; gap: 5px; padding: 7px 10px; border-top: 1px solid var(--border); }
+.tfbtn { flex: 1; padding: 6px 4px; border-radius: var(--r-md); font-size: 11px; font-weight: 500; cursor: pointer; text-align: center; border: 1px solid var(--border); background: var(--surface); color: var(--text); font-family: var(--font); }
+.tfbtn.bump { background: var(--text); color: white; border-color: var(--text); }
+.tfbtn.bump.ready { background: var(--accent); border-color: var(--accent); }
+.e86-bar { background: var(--surface); border-top: 1px solid var(--border); padding: 8px 14px; }
+.e86-chips { display: flex; gap: 6px; flex-wrap: wrap; }
+.e86-chip { display: flex; align-items: center; gap: 5px; padding: 5px 10px; border-radius: var(--r-full); font-size: 11px; font-weight: 500; cursor: pointer; border: 1px solid var(--border); background: var(--surface2); color: var(--text); }
+.e86-chip.out { background: var(--red-light); border-color: #fca5a5; color: var(--red); }
+.e86-chip.low { background: var(--amber-light); border-color: #fbbf24; color: var(--amber); }
+
+/* ── DASHBOARD ── */
+.dash-wrap { min-height: 100%; }
+.dash-header { background: var(--surface); border-bottom: 1px solid var(--border); padding: 10px 14px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px; }
+.dash-title { font-size: 14px; font-weight: 600; color: var(--text); }
+.alert-strip { background: var(--amber-light); border-bottom: 1px solid #fde68a; padding: 7px 14px; display: flex; align-items: center; gap: 8px; font-size: 12px; color: var(--amber); overflow-x: auto; }
+.alert-chip-sm { background: rgba(255,255,255,0.5); border: 1px solid #fbbf24; border-radius: var(--r-full); padding: 2px 8px; font-size: 10px; white-space: nowrap; cursor: pointer; }
+.dash-content { padding: 10px 12px; display: flex; flex-direction: column; gap: 10px; }
+.metrics-row { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; }
+.metrics-row.four { grid-template-columns: repeat(4, 1fr); }
+.mini-chart { height: 56px; display: flex; align-items: flex-end; gap: 3px; }
+.chart-bar { border-radius: 3px 3px 0 0; flex: 1; min-width: 0; }
+.chart-bar.today { background: var(--accent); }
+.chart-bar.prev { background: var(--surface2); border: 1px solid var(--border); }
+.chart-labels { display: flex; gap: 3px; margin-top: 3px; }
+.chart-lbl { flex: 1; text-align: center; font-size: 9px; color: var(--text3); }
+.table-list-item { display: flex; align-items: center; gap: 8px; padding: 6px 0; border-bottom: 1px solid var(--border); }
+.table-list-item:last-child { border-bottom: none; }
+.tl-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+.tl-info { flex: 1; }
+.tl-name { font-size: 12px; font-weight: 500; color: var(--text); }
+.tl-meta { font-size: 10px; color: var(--text2); }
+.item-rank-row { display: flex; align-items: center; gap: 6px; padding: 5px 0; border-bottom: 1px solid var(--border); }
+.item-rank-row:last-child { border-bottom: none; }
+.rank-num { width: 16px; font-size: 11px; color: var(--text2); flex-shrink: 0; }
+.rank-name { font-size: 12px; color: var(--text); flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.rank-bar-wrap { width: 60px; height: 4px; background: var(--surface2); border-radius: 2px; }
+.rank-bar { height: 100%; border-radius: 2px; background: var(--purple); }
+.rank-val { font-size: 11px; font-weight: 500; color: var(--text); width: 32px; text-align: right; }
+.exc-row { display: flex; align-items: center; gap: 8px; padding: 6px 0; border-bottom: 1px solid var(--border); }
+.exc-row:last-child { border-bottom: none; }
+.exc-icon-sm { width: 24px; height: 24px; border-radius: var(--r-sm); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.exc-name { font-size: 12px; font-weight: 500; color: var(--text); }
+.exc-meta { font-size: 10px; color: var(--text2); }
+.ai-chat-box { background: var(--surface2); border: 1px solid var(--border); border-radius: var(--r-lg); padding: 10px 12px; }
+.ai-msg { font-size: 12px; color: var(--text); line-height: 1.5; margin-bottom: 8px; }
+.ai-quick-chips { display: flex; gap: 5px; flex-wrap: wrap; margin-bottom: 8px; }
+.ai-quick { background: var(--surface); border: 1px solid var(--border); border-radius: var(--r-full); padding: 4px 9px; font-size: 11px; color: var(--text); cursor: pointer; }
+.ai-input-row { display: flex; gap: 6px; }
+.ai-input { flex: 1; border: 1px solid var(--border); border-radius: var(--r-md); padding: 7px 10px; font-size: 12px; background: var(--surface); color: var(--text); outline: none; font-family: var(--font); }
+.ai-send-btn { width: 32px; height: 32px; border-radius: 50%; background: var(--purple); border: none; color: white; cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+
+/* ── REPORTING ── */
+.report-tabs { display: flex; gap: 2px; background: var(--surface2); border-radius: var(--r-md); padding: 3px; overflow-x: auto; scrollbar-width: none; }
+.report-tabs::-webkit-scrollbar { display: none; }
+.rtab { padding: 5px 11px; border-radius: var(--r-sm); font-size: 11px; cursor: pointer; color: var(--text2); white-space: nowrap; font-family: var(--font); }
+.rtab.on { background: var(--surface); color: var(--text); font-weight: 500; border: 1px solid var(--border); }
+.report-table { width: 100%; border-collapse: collapse; font-size: 11px; }
+.report-table th { text-align: left; font-size: 10px; font-weight: 500; color: var(--text2); text-transform: uppercase; letter-spacing: 0.04em; padding: 0 0 7px; border-bottom: 1px solid var(--border); }
+.report-table th.r { text-align: right; }
+.report-table td { padding: 6px 0; border-bottom: 1px solid var(--border); color: var(--text); }
+.report-table td.r { text-align: right; }
+.report-table td.muted { color: var(--text2); }
+.report-table tr:last-child td { border-bottom: none; }
+.horiz-bar { height: 5px; background: var(--surface2); border-radius: 3px; margin-top: 3px; }
+.horiz-fill { height: 100%; border-radius: 3px; background: var(--accent); }
+
+/* ── FLOOR MAP ── */
+.floor-map-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; padding: 10px; }
+.floor-table { border-radius: var(--r-lg); padding: 10px; cursor: pointer; border: 1.5px solid transparent; transition: all 0.15s; }
+.floor-table:hover { filter: brightness(0.96); }
+.floor-table.available { background: var(--surface); border-color: var(--border); }
+.floor-table.seated { background: var(--blue-light); border-color: #93c5fd; }
+.floor-table.ordering { background: #f0fdf4; border-color: #86efac; }
+.floor-table.food-ready { background: var(--accent-light); border-color: var(--accent-mid); }
+.floor-table.check-time { background: var(--amber-light); border-color: #fbbf24; }
+.floor-table.reserved { background: var(--purple-light); border-color: #c4b5fd; }
+.ft-num { font-size: 14px; font-weight: 600; color: var(--text); }
+.ft-covers { font-size: 10px; color: var(--text2); }
+.ft-time { font-size: 11px; font-weight: 500; margin-top: 4px; }
+.pulse { animation: pulse 1.5s infinite; }
+.floor-detail { border-top: 1px solid var(--border); padding: 10px 14px; background: var(--surface); }
+
+/* ── TABLET / LAPTOP LAYOUT ── */
+.two-col { display: grid; grid-template-columns: 240px 1fr; height: 100%; }
+.sidebar { background: var(--surface); border-right: 1px solid var(--border); display: flex; flex-direction: column; overflow-y: auto; }
+.sidebar-brand { padding: 14px 16px; border-bottom: 1px solid var(--border); font-size: 16px; font-weight: 600; color: var(--accent); }
+.sidebar-brand span { color: var(--amber); }
+.sidebar-nav { padding: 8px; flex: 1; }
+.nav-item { display: flex; align-items: center; gap: 10px; padding: 9px 10px; border-radius: var(--r-md); cursor: pointer; font-size: 13px; color: var(--text2); transition: all 0.15s; margin-bottom: 2px; }
+.nav-item:hover { background: var(--surface2); color: var(--text); }
+.nav-item.on { background: var(--accent-light); color: var(--accent); font-weight: 500; }
+.nav-item i { font-size: 17px; }
+.sidebar-footer { padding: 12px; border-top: 1px solid var(--border); }
+.main-area { flex: 1; overflow: hidden; display: flex; flex-direction: column; }
+.main-scroll { flex: 1; overflow-y: auto; }
+
+/* ── LAPTOP GRID LAYOUTS ── */
+.lp-metrics { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; padding: 12px 14px 0; }
+.lp-row { display: grid; gap: 10px; padding: 10px 14px 0; }
+.lp-row.two { grid-template-columns: 2fr 1fr; }
+.lp-row.three { grid-template-columns: 1fr 1fr 1fr; }
+.lp-kds { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; padding: 10px 12px; }
+.lp-floor { padding: 10px 12px; }
+.lp-floor-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; }
+
+/* ── ONBOARDING ── */
+.onboard-step { padding: 20px; display: flex; flex-direction: column; gap: 12px; }
+.step-indicator { display: flex; gap: 5px; }
+.step-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--border2); }
+.step-dot.on { background: var(--accent); width: 18px; border-radius: 3px; }
+.big-emoji { font-size: 48px; text-align: center; padding: 12px 0; }
+.onboard-title { font-size: 20px; font-weight: 600; color: var(--text); text-align: center; }
+.onboard-sub { font-size: 13px; color: var(--text2); text-align: center; line-height: 1.5; }
+.upload-box { border: 2px dashed var(--border2); border-radius: var(--r-lg); padding: 28px; text-align: center; cursor: pointer; background: var(--surface2); }
+.upload-box:hover { border-color: var(--accent); background: var(--accent-light); }
+.input-field { width: 100%; border: 1px solid var(--border2); border-radius: var(--r-md); padding: 10px 12px; font-size: 14px; color: var(--text); background: var(--surface); outline: none; font-family: var(--font); }
+.input-field:focus { border-color: var(--accent); }
+.input-label { font-size: 12px; font-weight: 500; color: var(--text2); margin-bottom: 4px; }
+
+/* ── RESPONSIVE TWEAKS ── */
+.mobile-only { display: block; }
+.tablet-only { display: none; }
+.laptop-only { display: none; }
+</style>
+</head>
+<body>
+
+<!-- LAUNCHER -->
+<div class="launcher" id="launcher">
+  <div class="launcher-brand">
+    <div class="launcher-logo">cours<span>ly</span></div>
+    <div class="launcher-tagline">Interactive product demo — explore every screen</div>
+  </div>
+
+  <div style="text-align:center;">
+    <div style="font-size:13px;font-weight:500;color:var(--text2);margin-bottom:12px;text-transform:uppercase;letter-spacing:0.05em;">Choose a device</div>
+    <div class="device-grid">
+      <div class="device-card" onclick="launchDemo('mobile')">
+        <div class="dc-icon"><i class="ti ti-device-mobile"></i></div>
+        <div class="dc-name">Mobile</div>
+        <div class="dc-desc">Customer + quick staff view</div>
+      </div>
+      <div class="device-card" onclick="launchDemo('tablet')">
+        <div class="dc-icon"><i class="ti ti-device-tablet"></i></div>
+        <div class="dc-name">Tablet</div>
+        <div class="dc-desc">Staff ordering + station display</div>
+      </div>
+      <div class="device-card" onclick="launchDemo('laptop')">
+        <div class="dc-icon"><i class="ti ti-device-laptop"></i></div>
+        <div class="dc-name">Laptop</div>
+        <div class="dc-desc">Operator dashboard + full reports</div>
+      </div>
+    </div>
+  </div>
+
+  <div style="text-align:center;max-width:680px;width:100%;">
+    <div style="font-size:13px;font-weight:500;color:var(--text2);margin-bottom:10px;text-transform:uppercase;letter-spacing:0.05em;">Jump to any screen</div>
+    <div class="launcher-screens">
+      <div class="screen-card" onclick="launchScreen('mobile','customer-menu')"><div class="sc-label">Customer</div><div class="sc-name">Browse menu</div></div>
+      <div class="screen-card" onclick="launchScreen('mobile','item-detail')"><div class="sc-label">Customer</div><div class="sc-name">Item detail</div></div>
+      <div class="screen-card" onclick="launchScreen('mobile','payment-check')"><div class="sc-label">Customer</div><div class="sc-name">Payment flow</div></div>
+      <div class="screen-card" onclick="launchScreen('tablet','staff-floor')"><div class="sc-label">Staff</div><div class="sc-name">Floor map</div></div>
+      <div class="screen-card" onclick="launchScreen('tablet','staff-order')"><div class="sc-label">Staff</div><div class="sc-name">Order view</div></div>
+      <div class="screen-card" onclick="launchScreen('tablet','station')"><div class="sc-label">Kitchen</div><div class="sc-name">Station display</div></div>
+      <div class="screen-card" onclick="launchScreen('laptop','dashboard')"><div class="sc-label">Operator</div><div class="sc-name">Dashboard today</div></div>
+      <div class="screen-card" onclick="launchScreen('laptop','reports')"><div class="sc-label">Operator</div><div class="sc-name">Reports</div></div>
+      <div class="screen-card" onclick="launchScreen('mobile','onboard')"><div class="sc-label">Onboarding</div><div class="sc-name">Setup flow</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- DEMO SHELL -->
+<div class="demo-shell" id="demo-shell">
+  <div class="demo-topbar">
+    <div style="display:flex;align-items:center;gap:12px;">
+      <button class="demo-back" onclick="backToLauncher()"><i class="ti ti-arrow-left" style="font-size:12px;vertical-align:-1px"></i> All screens</button>
+      <div class="demo-brand">cours<span>ly</span></div>
+    </div>
+    <div class="demo-nav" id="demo-nav"></div>
+    <div class="demo-device-toggle">
+      <button class="ddt-btn" id="ddt-mobile" onclick="switchDevice('mobile')" title="Mobile"><i class="ti ti-device-mobile"></i></button>
+      <button class="ddt-btn" id="ddt-tablet" onclick="switchDevice('tablet')" title="Tablet"><i class="ti ti-device-tablet"></i></button>
+      <button class="ddt-btn" id="ddt-laptop" onclick="switchDevice('laptop')" title="Laptop"><i class="ti ti-device-laptop"></i></button>
+    </div>
+  </div>
+  <div class="demo-viewport" id="demo-viewport">
+    <div class="device-frame mobile" id="device-frame">
+      <div class="device-screen" id="device-screen">
+        <div class="screen-inner" id="screen-inner"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── STATE ──
+let currentDevice = 'mobile';
+let currentScreen = 'customer-menu';
+let qty = 1;
+let addOnTotal = 0;
+let tipPct = 20;
+let ingStates = {};
+
+const NAV_CONFIGS = {
+  mobile: [
+    { id: 'customer-menu', label: 'Menu' },
+    { id: 'item-detail', label: 'Item detail' },
+    { id: 'payment-check', label: 'Check' },
+    { id: 'payment-tip', label: 'Tip' },
+    { id: 'payment-method', label: 'Payment' },
+    { id: 'payment-confirm', label: 'Confirm' },
+    { id: 'onboard', label: 'Onboarding' },
+  ],
+  tablet: [
+    { id: 'staff-floor', label: 'Floor map' },
+    { id: 'staff-order', label: 'Order view' },
+    { id: 'station', label: 'Station display' },
+  ],
+  laptop: [
+    { id: 'dashboard', label: 'Today' },
+    { id: 'insights', label: 'Insights' },
+    { id: 'reports', label: 'Reports' },
+    { id: 'floor-map', label: 'Floor map' },
+  ],
+};
+
+// ── LAUNCH ──
+function launchDemo(device) {
+  currentDevice = device;
+  const defaultScreens = { mobile: 'customer-menu', tablet: 'staff-floor', laptop: 'dashboard' };
+  currentScreen = defaultScreens[device];
+  document.getElementById('launcher').style.display = 'none';
+  const shell = document.getElementById('demo-shell');
+  shell.style.display = 'flex';
+  updateDeviceFrame();
+  buildNav();
+  renderScreen();
+}
+
+function launchScreen(device, screen) {
+  currentDevice = device;
+  currentScreen = screen;
+  document.getElementById('launcher').style.display = 'none';
+  const shell = document.getElementById('demo-shell');
+  shell.style.display = 'flex';
+  updateDeviceFrame();
+  buildNav();
+  renderScreen();
+}
+
+function backToLauncher() {
+  document.getElementById('demo-shell').style.display = 'none';
+  document.getElementById('launcher').style.display = 'flex';
+}
+
+function switchDevice(device) {
+  currentDevice = device;
+  const defaultScreens = { mobile: 'customer-menu', tablet: 'staff-floor', laptop: 'dashboard' };
+  currentScreen = defaultScreens[device];
+  updateDeviceFrame();
+  buildNav();
+  renderScreen();
+}
+
+function updateDeviceFrame() {
+  const frame = document.getElementById('device-frame');
+  frame.className = 'device-frame ' + currentDevice;
+  ['mobile','tablet','laptop'].forEach(d => {
+    document.getElementById('ddt-'+d).classList.toggle('on', d === currentDevice);
+  });
+}
+
+function buildNav() {
+  const nav = document.getElementById('demo-nav');
+  nav.innerHTML = '';
+  (NAV_CONFIGS[currentDevice] || []).forEach(item => {
+    const btn = document.createElement('button');
+    btn.className = 'demo-nav-btn' + (item.id === currentScreen ? ' on' : '');
+    btn.textContent = item.label;
+    btn.onclick = () => goTo(item.id);
+    nav.appendChild(btn);
+  });
+}
+
+function goTo(screenId) {
+  currentScreen = screenId;
+  buildNav();
+  renderScreen();
+  document.getElementById('screen-inner').scrollTop = 0;
+}
+
+// ── RENDER ──
+function renderScreen() {
+  const inner = document.getElementById('screen-inner');
+  const renderers = {
+    'customer-menu': renderCustomerMenu,
+    'item-detail': renderItemDetail,
+    'payment-check': renderPaymentCheck,
+    'payment-tip': renderPaymentTip,
+    'payment-method': renderPaymentMethod,
+    'payment-confirm': renderPaymentConfirm,
+    'staff-floor': renderStaffFloor,
+    'staff-order': renderStaffOrder,
+    'station': renderStation,
+    'dashboard': renderDashboard,
+    'insights': renderInsights,
+    'reports': renderReports,
+    'floor-map': renderFloorMap,
+    'onboard': renderOnboard,
+  };
+  const fn = renderers[currentScreen];
+  inner.innerHTML = fn ? fn() : '<div style="padding:20px;color:var(--text2);">Screen coming soon.</div>';
+  attachBehavior(currentScreen);
+}
+
+// ── SCREENS ──
+function renderCustomerMenu() {
+  const isReturning = currentDevice !== 'mobile';
+  return `
+    <div class="page active" style="min-height:100%;">
+      <div class="status-bar"><span>9:41</span><span><i class="ti ti-wifi" style="font-size:12px"></i></span></div>
+      <div class="page-hdr">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;">
+          <div><div class="page-title">The Rusty Anchor</div><div class="page-sub"><i class="ti ti-map-pin" style="font-size:10px;vertical-align:-1px"></i> Table 7 · Order BR4-7</div></div>
+          <div style="text-align:right;"><div style="font-size:10px;color:var(--text2);">Hey, Jamie</div><div style="font-size:11px;color:var(--purple);font-weight:500;">420 pts 🎁</div><button style="background:none;border:none;cursor:pointer;color:var(--purple);font-size:11px;" onclick="goTo('item-detail')"><i class="ti ti-sparkles" style="font-size:13px;vertical-align:-2px"></i></button></div>
+        </div>
+      </div>
+      <div class="menu-top-strip">
+        <div class="top-seg tab"><i class="ti ti-receipt" style="font-size:12px"></i> $20</div>
+        <div style="width:1px;height:14px;background:var(--border);flex-shrink:0;"></div>
+        <div class="top-seg loyalty"><i class="ti ti-star" style="font-size:12px"></i> 80 pts to free app</div>
+        <div style="width:1px;height:14px;background:var(--border);flex-shrink:0;"></div>
+        <div class="top-seg perso"><i class="ti ti-sparkles" style="font-size:11px;color:var(--accent)"></i> Showing: Seafood ×</div>
+      </div>
+      <div class="cat-row">
+        <div class="cat-pill on">For you</div>
+        <div class="cat-pill">Starters</div>
+        <div class="cat-pill">Mains</div>
+        <div class="cat-pill">Drinks</div>
+        <div class="cat-pill">Desserts</div>
+        <div style="display:flex;gap:4px;margin-left:auto;flex-shrink:0;">
+          <div style="width:26px;height:26px;border-radius:50%;border:1px solid var(--border);background:var(--accent-light);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:12px;">🌱</div>
+          <div style="width:26px;height:26px;border-radius:50%;border:1px solid var(--border);background:var(--surface2);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:12px;">🌾</div>
+          <div style="display:flex;gap:2px;margin-left:4px;">
+            <div style="width:24px;height:24px;border-radius:var(--r-sm);border:1px solid var(--border);background:var(--text);display:flex;align-items:center;justify-content:center;cursor:pointer;color:white;font-size:11px;"><i class="ti ti-layout-list"></i></div>
+            <div style="width:24px;height:24px;border-radius:var(--r-sm);border:1px solid var(--border);background:var(--surface2);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:11px;"><i class="ti ti-layout-grid"></i></div>
+          </div>
+        </div>
+      </div>
+      <div class="join-strip">
+        <span style="font-size:12px;color:var(--text2);"><i class="ti ti-gift" style="font-size:12px;vertical-align:-2px;margin-right:4px"></i>Earn rewards on this order</span>
+        <button class="join-btn">Join free</button>
+      </div>
+      <div style="padding:0 14px;flex:1;">
+        <div class="sec-label">Featured tonight</div>
+        ${menuItem('🦞','Lobster Bisque','Velvety broth, whole claw · Tonight only','$14','feat','Tonight only',true)}
+        ${menuItem('🥩','Wagyu Burger','8oz wagyu, smoked gouda, brioche','$24','pop','14 today',false)}
+        ${menuItem('🐟','Pan Seared Salmon','Atlantic salmon, lemon caper butter','$28','sold','86\'d',false,true)}
+        <div class="sec-label">Starters</div>
+        ${menuItem('🥗','Seared Salmon Salad','Ora King salmon, mixed greens, feta, vinaigrette','$26','','')}
+        ${menuItem('🍢','Tuna Tartare','Avocado, sesame, wonton · raw','$16','','')}
+        ${menuItem('🍰','Crème Brûlée','Classic vanilla, caramelized sugar · 3 left','$9','lim','3 left')}
+        <div style="height:80px;"></div>
+      </div>
+      <div class="bottom-bar">
+        <div class="split-cart">
+          <div class="tab-pill"><i class="ti ti-receipt" style="font-size:14px"></i> $20</div>
+          <button class="send-btn" onclick="goTo('item-detail')">
+            <span>View order</span>
+            <span class="new-badge">2 items →</span>
+          </button>
+        </div>
+      </div>
+    </div>`;
+}
+
+function menuItem(emoji, name, desc, price, badgeType, badgeText, featured=false, soldOut=false) {
+  const badge = badgeType ? `<span class="chip chip-${badgeType==='feat'?'amber':badgeType==='pop'?'green':badgeType==='lim'?'red':'gray'}" style="font-size:9px;padding:1px 5px;">${badgeText}</span>` : '';
+  return `<div class="menu-item" style="${soldOut?'opacity:0.4;':''}" onclick="${soldOut?'':badgeType==='feat'||badgeType==='pop'?'goTo(\'item-detail\')':''}">
+    <div class="item-thumb">${emoji}${featured?'<div class="video-dot"><i class="ti ti-player-play" style="font-size:7px;color:white"></i></div>':''}</div>
+    <div class="item-info">
+      <div class="item-name">${name} ${badge}</div>
+      <div class="item-desc">${desc}</div>
+    </div>
+    <div style="display:flex;align-items:center;gap:7px;flex-shrink:0;">
+      <span class="price">${price}</span>
+      <button class="add-btn" ${soldOut?'disabled':''} onclick="event.stopPropagation();goTo('item-detail')">+</button>
+    </div>
+  </div>`;
+}
+
+function renderItemDetail() {
+  return `
+    <div class="page active" style="min-height:100%;">
+      <div class="status-bar"><span>9:42</span><span><i class="ti ti-wifi" style="font-size:12px"></i></span></div>
+      <div style="padding:7px 14px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;">
+        <button style="display:flex;align-items:center;gap:5px;font-size:13px;color:var(--text2);background:none;border:none;cursor:pointer;" onclick="goTo('customer-menu')"><i class="ti ti-arrow-left" style="font-size:15px"></i> Menu</button>
+        <div style="width:28px;height:28px;border-radius:50%;background:var(--purple-light);border:1px solid #c4b5fd;display:flex;align-items:center;justify-content:center;cursor:pointer;"><i class="ti ti-sparkles" style="font-size:13px;color:var(--purple)"></i></div>
+      </div>
+      <div class="media-hero">🥗
+        <div class="vid-chip"><i class="ti ti-player-play" style="font-size:9px"></i> Watch prep</div>
+        <div class="media-dots"><div class="mdot on"></div><div class="mdot"></div><div class="mdot"></div><div class="mdot"></div></div>
+      </div>
+      <div class="detail-body" style="padding-bottom:80px;">
+        <div class="item-title">Seared Salmon Salad</div>
+        <div class="big-price" id="detail-price">$26</div>
+        <div style="display:flex;gap:5px;flex-wrap:wrap;margin-top:5px;">
+          <span class="chip chip-green" style="font-size:10px;">🌾 Gluten free</span>
+          <span class="chip chip-gray" style="font-size:10px;">🐟 Contains fish</span>
+          <span class="chip chip-gray" style="font-size:10px;">🥛 Contains dairy</span>
+        </div>
+        <div class="desc-text">Seared 6oz Ora King salmon filet over mixed greens with pickled red onions, persian cucumbers, cherry heirloom tomatoes, feta cheese, and a champagne vinaigrette.</div>
+        <div class="divider"></div>
+        <div class="sec-label">Customize ingredients · tap to modify</div>
+        <div class="ing-grid" id="ing-grid">
+          <div class="ing-chip" id="ing-onion" onclick="showIngPop('ing-onion','Pickled red onions',false)">Pickled red onions</div>
+          <div class="ing-chip" id="ing-cuke" onclick="showIngPop('ing-cuke','Persian cucumbers',false)">Persian cucumbers</div>
+          <div class="ing-chip" id="ing-tom" onclick="showIngPop('ing-tom','Cherry tomatoes',false)">Cherry tomatoes</div>
+          <div class="ing-chip" id="ing-feta" onclick="showIngPop('ing-feta','Feta cheese',false)">Feta cheese</div>
+          <div class="ing-chip" id="ing-dress" onclick="showIngPop('ing-dress','Champagne vinaigrette',true)">Champagne vinaigrette</div>
+        </div>
+        <div id="ing-popup" style="display:none;background:var(--surface);border:1px solid var(--border);border-radius:var(--r-md);padding:4px;margin-top:6px;"></div>
+        <div id="ing-summary" style="font-size:10px;color:var(--amber);margin-top:4px;min-height:14px;"></div>
+        <div class="divider"></div>
+        <div class="sec-label">Salmon temperature · required</div>
+        <div id="temps">
+          ${tempOpt('Rare',false)}${tempOpt('Medium rare — recommended',true)}${tempOpt('Medium',false)}${tempOpt('Well done',false)}
+        </div>
+        <div class="divider"></div>
+        <div class="sec-label">Add-ons</div>
+        ${addonRow('Extra salmon (2oz)',7,false)}${addonRow('Avocado',3,false)}${addonRow('Dressing on the side',0,false)}${addonRow('Sourdough on the side',3,true)}
+        <div class="divider"></div>
+        <div class="sec-label">Pairs well with</div>
+        <div class="pair-chips">
+          <div class="pair-chip" onclick="showPairSheet('🥂','Sancerre','Loire Valley white · classic with salmon','$14')">🥂 Sancerre <span style="color:var(--text2);font-size:10px;">$14</span></div>
+          <div class="pair-chip" onclick="showPairSheet('🍋','Lemon Risotto','Arborio, preserved lemon, parmesan','$18')">🍋 Lemon Risotto <span style="color:var(--text2);font-size:10px;">$18</span></div>
+          <div class="pair-chip" onclick="showPairSheet('🍞','Sourdough','Housemade, warm with butter','$5')">🍞 Sourdough <span style="color:var(--text2);font-size:10px;">$5</span></div>
+        </div>
+        <div class="divider"></div>
+        <div style="background:var(--amber-light);border:1px solid #fde68a;border-radius:var(--r-md);padding:8px 10px;font-size:11px;color:var(--amber);display:flex;gap:6px;align-items:flex-start;">
+          <i class="ti ti-alert-triangle" style="font-size:14px;flex-shrink:0;margin-top:1px;"></i>
+          <span>Consuming raw or undercooked fish may increase risk of foodborne illness. By ordering you acknowledge this notice.</span>
+        </div>
+        <div class="divider"></div>
+        <div class="sec-label">Special requests <span style="font-weight:400;text-transform:none;letter-spacing:0;font-size:10px;color:var(--text3);">· optional</span></div>
+        <textarea class="notes-field" placeholder="e.g. allergy note to kitchen…"></textarea>
+        <div class="divider"></div>
+        <div class="sec-label">Send as course</div>
+        <div class="course-row">
+          <div class="course-btn" onclick="selCourse(this)">Starter</div>
+          <div class="course-btn" onclick="selCourse(this)">Main</div>
+          <div class="course-btn" onclick="selCourse(this)">Side</div>
+          <div class="course-btn on" onclick="selCourse(this)">Whenever ready</div>
+        </div>
+        <div style="font-size:10px;color:var(--text2);margin-top:4px;">Kitchen holds until you fire this course from your order screen.</div>
+      </div>
+      <div class="bottom-bar">
+        <div style="display:flex;gap:7px;">
+          <div class="qty-ctrl">
+            <button class="qty-btn" onclick="changeQty(-1)">−</button>
+            <span class="qty-num" id="qty-display">1</span>
+            <button class="qty-btn" onclick="changeQty(1)">+</button>
+          </div>
+          <button class="send-btn" style="flex:1;border-radius:var(--r-md);" onclick="goTo('payment-check')">
+            <span>Add to order</span>
+            <span id="add-btn-price" style="font-size:12px;opacity:.8;">$29 →</span>
+          </button>
+        </div>
+      </div>
+      <div id="pair-sheet" style="display:none;position:fixed;bottom:0;left:0;right:0;background:rgba(0,0,0,0.4);z-index:50;" onclick="document.getElementById('pair-sheet').style.display='none'">
+        <div style="background:var(--surface);border-radius:20px 20px 0 0;border-top:1px solid var(--border);padding:14px 14px 20px;" onclick="event.stopPropagation()">
+          <div style="width:32px;height:3px;background:var(--border);border-radius:2px;margin:0 auto 12px;"></div>
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">
+            <div style="width:48px;height:48px;border-radius:var(--r-md);background:var(--surface2);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;" id="ps-emoji">🥂</div>
+            <div><div style="font-size:14px;font-weight:500;" id="ps-name">Sancerre</div><div style="font-size:11px;color:var(--text2);margin-top:2px;" id="ps-desc">Loire Valley white</div><div style="font-size:14px;font-weight:500;margin-top:3px;" id="ps-price">$14</div></div>
+          </div>
+          <button class="btn-primary" style="margin-bottom:7px;border-radius:var(--r-md);" onclick="goTo('payment-check')"><span>Add both to order</span><i class="ti ti-arrow-right"></i></button>
+          <button style="width:100%;padding:10px;border-radius:var(--r-md);border:1px solid var(--border);background:var(--surface2);font-size:12px;font-weight:500;cursor:pointer;font-family:var(--font);" onclick="document.getElementById('pair-sheet').style.display='none'">View full details</button>
+        </div>
+      </div>
+    </div>`;
+}
+
+function tempOpt(label, selected) {
+  return `<div class="mod-row"><div style="display:flex;align-items:center;gap:8px;"><div class="radio ${selected?'on':''}" onclick="selTemp(this)"></div><span class="mod-name">${label}</span></div></div>`;
+}
+
+function addonRow(name, price, checked) {
+  return `<div class="mod-row"><div style="display:flex;align-items:center;gap:8px;"><div class="chk ${checked?'on':''}" onclick="togChk(this,${price})">${checked?'✓':''}</div><span class="mod-name">${name}</span></div><span class="mod-price">${price>0?'+$'+price:'no charge'}</span></div>`;
+}
+
+function renderPaymentCheck() {
+  return `
+    <div class="page active" style="min-height:100%;">
+      <div class="status-bar"><span>9:58</span><span><i class="ti ti-wifi" style="font-size:12px"></i></span></div>
+      <div class="page-hdr">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;">
+          <div><div class="page-title">Your check</div><div class="page-sub">Table 7 · BR4-7 · The Rusty Anchor</div></div>
+        </div>
+        <div style="display:flex;justify-content:center;gap:5px;padding-top:8px;">
+          <div style="width:18px;height:5px;border-radius:3px;background:var(--text);"></div>
+          <div style="width:6px;height:5px;border-radius:3px;background:var(--border2);"></div>
+          <div style="width:6px;height:5px;border-radius:3px;background:var(--border2);"></div>
+        </div>
+      </div>
+      <div class="scrollable">
+        <div class="sec-label">Your order</div>
+        <div class="check-line"><div class="cl-info"><div class="cl-name">Seared Salmon Salad</div><div class="cl-mod">Med rare · no feta · vinaigrette on side</div></div><span class="cl-price">$26</span></div>
+        <div class="check-line"><div class="cl-info"><div class="cl-name">Lobster Bisque</div><div class="cl-mod">Extra claw · sourdough</div></div><span class="cl-price">$20</span></div>
+        <div class="check-line"><div class="cl-info"><div class="cl-name">Chardonnay</div></div><span class="cl-price">$12</span></div>
+        <div class="check-line"><div class="cl-info"><div class="cl-name">House IPA</div></div><span class="cl-price">$8</span></div>
+        <div class="check-line"><div class="cl-info"><div class="cl-name">Wedge Salad</div><div class="cl-mod" style="color:var(--accent);">Comped by Maria</div></div><span class="cl-price" style="text-decoration:line-through;color:var(--text3);">$11 <span style="text-decoration:none;color:var(--accent);">$0</span></span></div>
+        <div class="totals-box">
+          <div class="tot-row"><span>Subtotal</span><span>$66</span></div>
+          <div class="tot-row"><span>Tax (8.5%)</span><span>$5.61</span></div>
+          <div class="tot-row"><span>Comps</span><span style="color:var(--accent);">−$11</span></div>
+          <div class="tot-row grand"><span>Total before tip</span><span>$60.61</span></div>
+        </div>
+        <div style="font-size:11px;color:var(--text2);text-align:center;margin-top:8px;">Something wrong? <span style="color:var(--text);font-weight:500;cursor:pointer;">Contact your server</span></div>
+      </div>
+      <div class="bottom-bar">
+        <button class="btn-primary" onclick="goTo('payment-tip')"><span>Continue to tip</span><span style="opacity:.8;font-size:12px;">$60.61 →</span></button>
+      </div>
+    </div>`;
+}
+
+function renderPaymentTip() {
+  const base = 60.61;
+  const tip = parseFloat((base * tipPct / 100).toFixed(2));
+  const grand = parseFloat((base + tip).toFixed(2));
+  return `
+    <div class="page active" style="min-height:100%;">
+      <div class="status-bar"><span>9:58</span><span><i class="ti ti-wifi" style="font-size:12px"></i></span></div>
+      <div class="page-hdr">
+        <div style="display:flex;justify-content:space-between;align-items:center;"><div class="page-title">Add a tip</div><span style="font-size:12px;color:var(--text2);">$60.61</span></div>
+        <div style="display:flex;justify-content:center;gap:5px;padding-top:8px;">
+          <div style="width:6px;height:5px;border-radius:3px;background:var(--border2);"></div>
+          <div style="width:18px;height:5px;border-radius:3px;background:var(--text);"></div>
+          <div style="width:6px;height:5px;border-radius:3px;background:var(--border2);"></div>
+        </div>
+      </div>
+      <div class="scrollable">
+        <div style="font-size:13px;color:var(--text2);padding:8px 0 12px;line-height:1.5;">Maria has been your server tonight.</div>
+        <div class="tip-grid" id="tip-grid">
+          <div class="tip-btn ${tipPct===18?'on':''}" onclick="selTip(18,60.61,this)">18%<div class="tip-sub">$10.91</div></div>
+          <div class="tip-btn ${tipPct===20?'on':''}" onclick="selTip(20,60.61,this)">20%<div class="tip-sub">$12.12</div></div>
+          <div class="tip-btn ${tipPct===22?'on':''}" onclick="selTip(22,60.61,this)">22%<div class="tip-sub">$13.33</div></div>
+          <div class="tip-btn ${tipPct===0?'on':''}" onclick="selTip(0,60.61,this)">No tip<div class="tip-sub">&nbsp;</div></div>
+        </div>
+        <div style="display:flex;align-items:center;border:1px solid var(--border);border-radius:var(--r-md);overflow:hidden;margin-top:7px;">
+          <input type="number" placeholder="Custom amount" style="flex:1;border:none;padding:9px 10px;font-size:13px;background:var(--surface);color:var(--text);outline:none;font-family:var(--font);" oninput="customTipInput(60.61,this.value)"/>
+          <span style="padding:9px 10px;font-size:12px;color:var(--text2);background:var(--surface2);border-left:1px solid var(--border);">$</span>
+        </div>
+        <div class="totals-box" style="margin-top:10px;">
+          <div class="tot-row"><span>Check total</span><span>$60.61</span></div>
+          <div class="tot-row"><span>Tip (${tipPct}%)</span><span id="tip-amount">$${tip.toFixed(2)}</span></div>
+          <div class="tot-row grand"><span>You pay</span><span id="grand-total">$${grand.toFixed(2)}</span></div>
+        </div>
+        <div style="background:var(--purple-light);border-radius:var(--r-md);padding:7px 10px;font-size:12px;color:var(--purple);display:flex;align-items:center;justify-content:space-between;margin-top:8px;">
+          <span><i class="ti ti-star" style="font-size:13px;vertical-align:-2px;margin-right:4px;"></i>Earn 73 pts on this order</span>
+          <span style="font-size:11px;opacity:.7;">420 → 493</span>
+        </div>
+      </div>
+      <div class="bottom-bar">
+        <button class="btn-primary" id="tip-continue-btn" onclick="goTo('payment-method')"><span>Continue to payment</span><span style="opacity:.8;font-size:12px;" id="tip-btn-total">$${grand.toFixed(2)} →</span></button>
+      </div>
+    </div>`;
+}
+
+function renderPaymentMethod() {
+  return `
+    <div class="page active" style="min-height:100%;">
+      <div class="status-bar"><span>9:59</span><span><i class="ti ti-wifi" style="font-size:12px"></i></span></div>
+      <div class="page-hdr">
+        <div style="display:flex;justify-content:space-between;align-items:center;">
+          <div class="page-title">Pay $72.73</div>
+          <button onclick="goTo('payment-tip')" style="background:none;border:none;font-size:12px;color:var(--text2);cursor:pointer;"><i class="ti ti-arrow-left" style="font-size:13px;vertical-align:-2px"></i> Edit tip</button>
+        </div>
+        <div style="display:flex;justify-content:center;gap:5px;padding-top:8px;">
+          <div style="width:6px;height:5px;border-radius:3px;background:var(--border2);"></div>
+          <div style="width:6px;height:5px;border-radius:3px;background:var(--border2);"></div>
+          <div style="width:18px;height:5px;border-radius:3px;background:var(--text);"></div>
+        </div>
+      </div>
+      <div class="scrollable">
+        <div class="sec-label">Pay with</div>
+        <div class="pay-method dark" onclick="goTo('payment-confirm')"><div class="pay-icon"><i class="ti ti-brand-apple" style="font-size:16px;color:white"></i></div><span>Apple Pay</span><i class="ti ti-chevron-right" style="margin-left:auto;font-size:14px;opacity:.6"></i></div>
+        <div class="pay-method google" onclick="goTo('payment-confirm')"><div class="pay-icon"><i class="ti ti-brand-google" style="font-size:16px;color:white"></i></div><span>Google Pay</span><i class="ti ti-chevron-right" style="margin-left:auto;font-size:14px;opacity:.6"></i></div>
+        <div class="pay-method primary" onclick="goTo('payment-confirm')"><div class="pay-icon"><i class="ti ti-credit-card" style="font-size:16px;color:white"></i></div><span>Credit or debit card</span><i class="ti ti-chevron-right" style="margin-left:auto;font-size:14px;opacity:.6"></i></div>
+        <div style="text-align:center;margin:12px 0;"><span style="font-size:11px;color:var(--text2);">— or split the check —</span></div>
+        <div style="display:flex;gap:6px;">
+          <div style="flex:1;padding:8px;border-radius:var(--r-md);border:1px solid var(--text);background:var(--surface);font-size:11px;color:var(--text);cursor:pointer;text-align:center;display:flex;align-items:center;justify-content:center;gap:4px;"><i class="ti ti-user" style="font-size:13px"></i>Pay mine</div>
+          <div style="flex:1;padding:8px;border-radius:var(--r-md);border:1px solid var(--border);background:var(--surface2);font-size:11px;color:var(--text2);cursor:pointer;text-align:center;display:flex;align-items:center;justify-content:center;gap:4px;"><i class="ti ti-users" style="font-size:13px"></i>Split evenly</div>
+          <div style="flex:1;padding:8px;border-radius:var(--r-md);border:1px solid var(--border);background:var(--surface2);font-size:11px;color:var(--text2);cursor:pointer;text-align:center;display:flex;align-items:center;justify-content:center;gap:4px;"><i class="ti ti-list-check" style="font-size:13px"></i>By item</div>
+        </div>
+        <div style="margin-top:10px;background:var(--surface2);border-radius:var(--r-md);padding:8px 10px;display:flex;align-items:center;gap:6px;font-size:11px;color:var(--text2);">
+          <i class="ti ti-lock" style="font-size:13px"></i>Secured by Stripe · PCI compliant
+        </div>
+      </div>
+    </div>`;
+}
+
+function renderPaymentConfirm() {
+  return `
+    <div class="page active" style="min-height:100%;display:flex;flex-direction:column;">
+      <div class="status-bar"><span>9:59</span><span><i class="ti ti-wifi" style="font-size:12px"></i></span></div>
+      <div class="confirm-screen">
+        <div class="confirm-icon"><i class="ti ti-check" style="font-size:26px;color:var(--accent)"></i></div>
+        <div class="confirm-title">All paid — thanks!</div>
+        <div class="confirm-sub">$72.73 paid · Table 7<br>The Rusty Anchor · 9:59 PM</div>
+        <div style="background:var(--purple-light);border-radius:var(--r-md);padding:8px 12px;font-size:12px;color:var(--purple);width:100%;text-align:center;margin:12px 0;"><i class="ti ti-star" style="font-size:13px;vertical-align:-2px;margin-right:4px;"></i>73 points earned · you now have 493 pts</div>
+        <div style="width:100%;display:flex;flex-direction:column;gap:7px;">
+          <button class="btn-primary" style="border-radius:var(--r-md);"><span>Text receipt</span></button>
+          <button style="width:100%;padding:11px;border-radius:var(--r-md);border:1px solid var(--border);background:var(--surface2);font-size:12px;font-weight:500;cursor:pointer;font-family:var(--font);">Email receipt</button>
+          <button style="width:100%;padding:8px;border:none;background:none;font-size:12px;color:var(--text2);cursor:pointer;font-family:var(--font);">No receipt</button>
+        </div>
+        <div style="margin-top:14px;font-size:12px;color:var(--text2);">Rate your experience?</div>
+        <div style="display:flex;gap:10px;margin-top:8px;font-size:24px;">
+          <span style="cursor:pointer;">😐</span>
+          <span style="cursor:pointer;">🙂</span>
+          <span style="cursor:pointer;">😄</span>
+        </div>
+        <div style="margin-top:14px;font-size:11px;color:var(--accent);cursor:pointer;" onclick="goTo('customer-menu')">← Back to menu</div>
+      </div>
+    </div>`;
+}
+
+function renderStaffFloor() {
+  const isBig = currentDevice !== 'mobile';
+  const wrap = isBig ? 'two-col' : '';
+  const sidebar = isBig ? `<div class="sidebar">${staffSidebar('floor-map')}</div>` : '';
+  return `<div class="${wrap}" style="height:100%;min-height:100%;">
+    ${sidebar}
+    <div class="main-area">
+      <div class="dash-header">
+        <div class="dash-title"><i class="ti ti-layout-grid" style="font-size:16px;margin-right:5px;color:var(--accent)"></i>Floor · Main room</div>
+        <div style="display:flex;gap:6px;align-items:center;">
+          <span class="chip chip-green"><i class="ti ti-users" style="font-size:11px"></i> 28 covers</span>
+          <span class="chip chip-amber"><i class="ti ti-clock" style="font-size:11px"></i> 3 need attention</span>
+        </div>
+      </div>
+      <div class="alert-strip">
+        <i class="ti ti-alert-triangle" style="font-size:13px;flex-shrink:0"></i><strong style="margin-right:4px;">Needs attention:</strong>
+        <div class="alert-chip-sm" onclick="goTo('staff-order')">Table 3 · 52 min · expedite</div>
+        <div class="alert-chip-sm">Wagyu Burger · 2 left</div>
+        <div class="alert-chip-sm">Comp pending · $11</div>
+      </div>
+      <div class="main-scroll">
+        <div style="padding:10px 12px;">
+          <div class="sec-label">Needs attention</div>
+          <div class="floor-grid">
+            <div class="table-card" style="background:var(--red-light);border-color:#fca5a5;" onclick="goTo('staff-order')">
+              <div class="tc-dot" style="background:var(--red);"></div>
+              <div class="tc-num">Table 3</div><div class="tc-status">4 covers · Carlos</div>
+              <div class="tc-time late">52 min</div>
+              <span class="chip chip-red" style="font-size:9px;margin-top:4px;">Expedite</span>
+            </div>
+            <div class="table-card" style="background:var(--accent-light);border-color:var(--accent-mid);" onclick="goTo('staff-order')">
+              <div class="tc-dot" style="background:var(--accent);animation:pulse 1.5s infinite;"></div>
+              <div class="tc-num">Table 7</div><div class="tc-status">2 covers · Maria</div>
+              <div class="tc-time ok">18 min</div>
+              <span class="chip chip-green" style="font-size:9px;margin-top:4px;">Food ready</span>
+            </div>
+          </div>
+          <div class="sec-label" style="margin-top:10px;">Active</div>
+          <div class="floor-grid">
+            <div class="table-card ordering" onclick="goTo('staff-order')"><div class="tc-num">Table 1</div><div class="tc-status">3 covers · Jordan</div><div class="tc-time ok">8 min</div></div>
+            <div class="table-card ordering" onclick="goTo('staff-order')"><div class="tc-num">Table 5</div><div class="tc-status">6 covers · Maria</div><div class="tc-time ok">31 min</div></div>
+            <div class="table-card check-drop" onclick="goTo('staff-order')"><div class="tc-num">Table 9</div><div class="tc-status">2 covers · Jordan</div><div class="tc-time late">44 min</div><span class="chip chip-amber" style="font-size:9px;margin-top:4px;">Check</span></div>
+            <div class="table-card ordering" onclick="goTo('staff-order')"><div class="tc-num">Table 11</div><div class="tc-status">5 covers · Carlos</div><div class="tc-time ok">12 min</div></div>
+          </div>
+          <div class="sec-label" style="margin-top:10px;">Available</div>
+          <div class="floor-grid">
+            <div class="table-card available"><div class="tc-num">Table 2</div><div class="tc-status">4 covers · empty</div></div>
+            <div class="table-card available"><div class="tc-num">Table 4</div><div class="tc-status">2 covers · empty</div></div>
+            <div class="table-card" style="background:var(--purple-light);border-color:#c4b5fd;"><div class="tc-num">Table 6</div><div class="tc-status">4 covers</div><div class="tc-time" style="color:var(--purple);font-weight:500;">Reserved 8:30p</div></div>
+            <div class="table-card available"><div class="tc-num">Table 8</div><div class="tc-status">4 covers · empty</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>`;
+}
+
+function renderStaffOrder() {
+  const isBig = currentDevice !== 'mobile';
+  const sidebar = isBig ? `<div class="sidebar">${staffSidebar('staff-order')}</div>` : '';
+  const wrap = isBig ? 'two-col' : '';
+  return `<div class="${wrap}" style="height:100%;min-height:100%;">
+    ${sidebar}
+    <div class="main-area">
+      <div class="page-hdr">
+        <div style="display:flex;align-items:center;justify-content:space-between;">
+          <div style="display:flex;align-items:center;gap:8px;">
+            ${!isBig?'<button style="background:none;border:none;cursor:pointer;font-size:13px;color:var(--text2);" onclick="goTo(\'staff-floor\')"><i class="ti ti-arrow-left" style="font-size:15px"></i></button>':''}
+            <div><div class="page-title">Table 7</div><div class="page-sub">2 covers · Jamie + guest · 18 min · $47 so far</div></div>
+          </div>
+          <div style="display:flex;gap:6px;">
+            <div style="width:30px;height:30px;border-radius:var(--r-sm);background:var(--surface2);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;cursor:pointer;" onclick="showPinModal()"><i class="ti ti-lock" style="font-size:14px;color:var(--text2)"></i></div>
+            <div style="width:30px;height:30px;border-radius:var(--r-sm);background:var(--surface2);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;cursor:pointer;"><i class="ti ti-dots" style="font-size:14px;color:var(--text2)"></i></div>
+          </div>
+        </div>
+        <div class="action-chips">
+          <div class="act-chip fire"><i class="ti ti-player-play" style="font-size:12px"></i>Fire course</div>
+          <div class="act-chip"><i class="ti ti-arrows-split" style="font-size:12px"></i>Split</div>
+          <div class="act-chip comp"><i class="ti ti-ticket" style="font-size:12px"></i>Comp</div>
+          <div class="act-chip"><i class="ti ti-transfer" style="font-size:12px"></i>Transfer</div>
+          <div class="act-chip danger"><i class="ti ti-printer" style="font-size:12px"></i>Print</div>
+        </div>
+      </div>
+      <div style="display:flex;align-items:center;gap:8px;margin:8px 14px 4px;background:var(--surface2);border:1px solid var(--border);border-radius:var(--r-md);padding:7px 10px;">
+        <i class="ti ti-search" style="font-size:14px;color:var(--text2)"></i>
+        <input placeholder="Search menu to add items…" style="flex:1;background:none;border:none;font-size:13px;color:var(--text);outline:none;font-family:var(--font);" />
+        <i class="ti ti-microphone" style="font-size:14px;color:var(--text2)"></i>
+      </div>
+      <div class="main-scroll">
+        <div style="padding:0 14px;">
+          <div class="sec-label">Ordered · starters</div>
+          ${orderItem('1','Wedge Salad','No bacon · bleu cheese on side','$11','ready')}
+          ${orderItem('2','Lobster Bisque','Extra claw · tonight special','$20','firing')}
+          <div class="sec-label">Ordered · drinks</div>
+          ${orderItem('1','Chardonnay','Glass · delivered','$12','delivered')}
+          ${orderItem('2','House IPA','16oz · delivered','$8','delivered')}
+          <div class="sec-label" style="display:flex;align-items:center;justify-content:space-between;"><span>Not yet sent</span><span style="font-size:10px;color:var(--blue);cursor:pointer;">Clear all</span></div>
+          <div style="background:var(--surface2);border-radius:var(--r-md);padding:9px;margin-bottom:4px;">
+            ${orderItem('1','Seared Salmon Salad','Med rare · no feta · vinaigrette on side','$26','new',true)}
+          </div>
+          <div style="height:10px;"></div>
+        </div>
+      </div>
+      <div class="bottom-bar">
+        <div style="display:flex;gap:7px;">
+          <div style="display:flex;align-items:center;gap:5px;background:var(--surface2);border:1px solid var(--border);border-radius:var(--r-md);padding:0 12px;font-size:13px;font-weight:500;height:42px;flex-shrink:0;">$47</div>
+          <button class="send-btn" style="flex:1;border-radius:var(--r-md);" onclick="goTo('station')">
+            <span>Send to kitchen</span>
+            <span class="new-badge">1 new →</span>
+          </button>
+        </div>
+      </div>
+      <div id="pin-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:50;display:none;align-items:center;justify-content:center;">
+        <div style="background:var(--surface);border-radius:var(--r-xl);padding:20px;width:220px;text-align:center;">
+          <div style="font-size:14px;font-weight:500;margin-bottom:4px;">Manager approval</div>
+          <div style="font-size:12px;color:var(--text2);margin-bottom:14px;">Enter PIN to comp item</div>
+          <div style="display:flex;justify-content:center;gap:8px;margin-bottom:14px;" id="pin-dots">
+            <div style="width:12px;height:12px;border-radius:50%;border:1.5px solid var(--border2);background:var(--surface2);"></div>
+            <div style="width:12px;height:12px;border-radius:50%;border:1.5px solid var(--border2);background:var(--surface2);"></div>
+            <div style="width:12px;height:12px;border-radius:50%;border:1.5px solid var(--border2);background:var(--surface2);"></div>
+            <div style="width:12px;height:12px;border-radius:50%;border:1.5px solid var(--border2);background:var(--surface2);"></div>
+          </div>
+          <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:6px;" id="pin-grid">
+            ${[1,2,3,4,5,6,7,8,9,'↩','0','✕'].map(k=>`<div style="padding:10px;border-radius:var(--r-md);border:1px solid var(--border);background:var(--surface2);font-size:16px;font-weight:500;cursor:pointer;" onclick="pinKey('${k}')">${k}</div>`).join('')}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>`;
+}
+
+function orderItem(seat, name, mods, price, status, unsent=false) {
+  const statusColors = {new:'var(--blue)',pending:'var(--text3)',accepted:'var(--blue)',firing:'var(--amber)',ready:'var(--accent)',delivered:'var(--border2)'};
+  const statusLabels = {new:'Sent · waiting',pending:'Pending',accepted:'Accepted',firing:'Firing · ~6 min',ready:'Ready · pick up',delivered:'Delivered'};
+  return `<div class="order-item">
+    <div class="seat-dot">${seat}</div>
+    <div style="flex:1;min-width:0;">
+      <div class="oi-name">${name}</div>
+      <div class="oi-mod">${mods}</div>
+      <div class="oi-actions">
+        <div class="oi-btn fire">Expedite</div>
+        <div class="oi-btn comp">Comp</div>
+        <div class="oi-btn" style="color:var(--red);">Void</div>
+        ${unsent?'<div class="oi-btn">Edit</div>':''}
+      </div>
+    </div>
+    <div style="display:flex;flex-direction:column;align-items:flex-end;gap:3px;flex-shrink:0;">
+      <span style="font-size:12px;font-weight:500;">${price}</span>
+      <span style="font-size:10px;font-weight:500;color:${statusColors[status]};">${statusLabels[status]}</span>
+    </div>
+  </div>`;
+}
+
+function staffSidebar(active) {
+  const items = [
+    {id:'staff-floor',icon:'ti-layout-grid',label:'Floor'},
+    {id:'staff-order',icon:'ti-clipboard-list',label:'Open orders'},
+    {id:'station',icon:'ti-chef-hat',label:'Station display'},
+    {id:'dashboard',icon:'ti-chart-bar',label:'Dashboard'},
+    {id:'reports',icon:'ti-report',label:'Reports'},
+  ];
+  return `
+    <div class="sidebar-brand">cours<span style="color:var(--amber);">ly</span></div>
+    <div class="sidebar-nav">
+      ${items.map(i=>`<div class="nav-item ${i.id===active?'on':''}" onclick="goTo('${i.id}')"><i class="ti ${i.icon}"></i>${i.label}</div>`).join('')}
+    </div>
+    <div class="sidebar-footer">
+      <div style="display:flex;align-items:center;gap:8px;">
+        <div style="width:30px;height:30px;border-radius:50%;background:var(--accent-light);border:1px solid var(--accent-mid);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:500;color:var(--accent);flex-shrink:0;">MA</div>
+        <div><div style="font-size:12px;font-weight:500;color:var(--text);">Maria</div><div style="font-size:10px;color:var(--text2);">Server · Section A</div></div>
+      </div>
+    </div>`;
+}
+
+function renderStation() {
+  const isBig = currentDevice !== 'mobile';
+  const sidebar = isBig ? `<div class="sidebar">${staffSidebar('station')}</div>` : '';
+  const wrap = isBig ? 'two-col' : '';
+  return `<div class="${wrap}" style="height:100%;min-height:100%;">
+    ${sidebar}
+    <div class="main-area" style="background:var(--surface2);">
+      <div class="kds-header">
+        <div class="kds-title"><div class="live-dot"></div>Kitchen · Main line</div>
+        <div style="display:flex;gap:8px;align-items:center;">
+          <span class="chip chip-green">Avg 8 min</span>
+          <span class="chip chip-red">1 expedite</span>
+        </div>
+      </div>
+      <div class="main-scroll">
+        <div class="kds-grid">
+          ${ticket('ticket-t3','Table 3','Seat 2','Carlos','14 min','late',true,false,[
+            {qty:1,name:'Wagyu Burger',mod:'Med rare · no onion · add bacon',exp:true},
+            {qty:1,name:'Truffle Fries',mod:'Extra parmesan',exp:true},
+          ])}
+          ${ticket('ticket-t7','Table 7','Full table','Maria','2 min','ok',false,false,[
+            {qty:1,name:'Seared Salmon Salad',mod:'Med rare · no feta · vinaigrette on side',exp:false},
+            {qty:1,name:'Lobster Bisque',mod:'Extra claw · sourdough',exp:false},
+            {qty:2,name:'Drinks',mod:'Chardonnay · IPA · delivered',exp:false,done:true},
+          ])}
+          ${ticket('ticket-t1','Table 1','Seats 1–3','Jordan','4 min','ok',false,false,[
+            {qty:1,name:'Wedge Salad',mod:'No bacon · bleu cheese on side',exp:false},
+            {qty:2,name:'Oysters × 2',mod:'Half shell · raw acknowledged',exp:false},
+          ])}
+          ${ticket('ticket-t5','Table 5','Full table','Maria','7 min','ok',false,true,[
+            {qty:1,name:'Filet Mignon',mod:'Med rare · truffle jus',exp:false,done:true},
+            {qty:1,name:'Lobster Bisque',mod:'Extra claw',exp:false,done:true},
+            {qty:2,name:'Truffle Fries × 2',mod:'Seats 3–4',exp:false,done:true},
+          ])}
+        </div>
+      </div>
+      <div class="e86-bar">
+        <div class="sec-label" style="margin-bottom:6px;">86 board</div>
+        <div class="e86-chips">
+          <div class="e86-chip out" onclick="this.classList.toggle('out');this.classList.toggle('low');"><i class="ti ti-x" style="font-size:11px"></i>Pan Seared Salmon</div>
+          <div class="e86-chip low"><i class="ti ti-alert-triangle" style="font-size:11px"></i>Crème Brûlée <span style="font-size:10px;opacity:.8;">3 left</span></div>
+          <div class="e86-chip low"><i class="ti ti-alert-triangle" style="font-size:11px"></i>Wagyu Burger <span style="font-size:10px;opacity:.8;">2 left</span></div>
+          <div style="display:flex;align-items:center;gap:5px;padding:5px 10px;border-radius:var(--r-full);font-size:11px;cursor:pointer;border:1px dashed var(--border2);color:var(--text2);" onclick="alert('Type item name to 86')"><i class="ti ti-plus" style="font-size:11px"></i>86 item</div>
+        </div>
+      </div>
+    </div>
+  </div>`;
+}
+
+function ticket(id, table, sub, server, time, timeClass, isExp, isReady, items) {
+  const headClass = isExp ? 'exp-bg' : isReady ? 'ready-bg' : 'ok-bg';
+  const cardClass = isExp ? 'expedite' : isReady ? 'ready' : '';
+  const itemsHtml = items.map((item,i) => `
+    <div class="titem ${item.done?'done':''}" onclick="toggleKdsItem(this)">
+      <div class="titem-qty ${item.exp?'style="background:var(--red-light);border-color:#fca5a5;"':''}">${item.qty}</div>
+      <div style="flex:1;min-width:0;"><div class="titem-name ${item.done?'done':''}">${item.name}</div><div class="titem-mod">${item.mod}</div></div>
+      <div class="tcheck ${item.done?'done':''}">${item.done?'✓':''}</div>
+    </div>`).join('');
+  return `<div class="ticket ${cardClass}" id="${id}">
+    <div class="ticket-head ${headClass}">
+      <div><div class="t-name">${table} · ${sub}</div><div style="font-size:10px;color:var(--text2);margin-top:1px;">Server: ${server}</div></div>
+      <div style="display:flex;flex-direction:column;align-items:flex-end;gap:3px;">
+        ${isExp?'<span class="chip chip-red" style="font-size:9px;"><i class="ti ti-bolt" style="font-size:9px"></i> Expedite</span>':''}
+        ${isReady?'<span class="chip chip-green" style="font-size:9px;"><i class="ti ti-check" style="font-size:9px"></i> Ready</span>':''}
+        <span class="t-time ${timeClass}">${time}</span>
+      </div>
+    </div>
+    <div class="ticket-items">${itemsHtml}</div>
+    <div class="ticket-foot">
+      <div class="tfbtn">${isExp?'Hold':'Recall'}</div>
+      <div class="tfbtn bump ${isReady?'ready':''}" onclick="bumpTicket('${id}')">${isReady?'Mark served':'Bump'}</div>
+    </div>
+  </div>`;
+}
+
+function renderDashboard() {
+  const isBig = currentDevice === 'laptop';
+  const sidebar = isBig ? `<div class="sidebar">${operatorSidebar('dashboard')}</div>` : '';
+  const wrap = isBig ? 'two-col' : '';
+  const metricsClass = isBig ? 'metrics-row four' : 'metrics-row';
+  return `<div class="${wrap}" style="height:100%;min-height:100%;">
+    ${sidebar}
+    <div class="main-area">
+      <div class="dash-header">
+        <div class="dash-title">Today · Thu May 14</div>
+        <div style="display:flex;gap:6px;align-items:center;">
+          <span class="chip chip-purple" style="cursor:pointer;"><i class="ti ti-sparkles" style="font-size:11px"></i> Ask AI</span>
+          <div style="width:28px;height:28px;border-radius:var(--r-sm);background:var(--surface2);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;cursor:pointer;position:relative;"><i class="ti ti-bell" style="font-size:14px;color:var(--text2)"></i><div style="position:absolute;top:5px;right:5px;width:6px;height:6px;border-radius:50%;background:var(--red);"></div></div>
+        </div>
+      </div>
+      <div class="alert-strip">
+        <i class="ti ti-alert-triangle" style="font-size:12px;flex-shrink:0"></i>
+        <strong style="margin-right:4px;">Attention:</strong>
+        <div class="alert-chip-sm" onclick="goTo('staff-order')">Table 3 · 52 min · expedite</div>
+        <div class="alert-chip-sm">Wagyu Burger · 2 left</div>
+        <div class="alert-chip-sm">Comp pending · $11</div>
+        <div class="alert-chip-sm">Maria · OT risk 6.5h</div>
+      </div>
+      <div class="main-scroll">
+        <div class="dash-content">
+          <div class="${metricsClass}">
+            ${metricCard('Revenue today','$4,847','↑ 12% vs last Tue','up')}
+            ${metricCard('Covers','84','↑ 6 vs last Tue · avg $57.70','up')}
+            ${metricCard('Open tables','6 / 14','43% occupied · 3 need action','neutral')}
+            ${metricCard('Labor ratio','28%','−2% vs target · $1,357 so far','up')}
+          </div>
+          <div style="${isBig?'display:grid;grid-template-columns:2fr 1fr;gap:10px;':''}">
+            <div class="card">
+              <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
+                <div style="font-size:13px;font-weight:500;">Revenue by hour</div>
+                <div style="display:flex;gap:8px;">
+                  <div style="display:flex;align-items:center;gap:4px;font-size:10px;color:var(--text2);"><div style="width:8px;height:8px;border-radius:2px;background:var(--accent);"></div>Today</div>
+                  <div style="display:flex;align-items:center;gap:4px;font-size:10px;color:var(--text2);"><div style="width:8px;height:8px;border-radius:2px;background:var(--surface2);border:1px solid var(--border);"></div>Last Tue</div>
+                </div>
+              </div>
+              <div class="mini-chart">
+                ${['22','40','35','18','14','20','52','70','85','100','62','30'].map((h,i)=>`<div class="chart-bar ${i>=6?'today':'prev'}" style="height:${h}%;" title="${i+11}:00"></div>`).join('')}
+              </div>
+              <div class="chart-labels">${['11a','12p','1p','2p','3p','4p','5p','6p','7p','8p','9p','10p'].map(l=>`<div class="chart-lbl">${l}</div>`).join('')}</div>
+            </div>
+            <div class="card">
+              <div style="font-size:13px;font-weight:500;margin-bottom:8px;">Active tables</div>
+              <div class="table-list-item"><div class="tl-dot" style="background:var(--red);"></div><div class="tl-info"><div class="tl-name">Table 3</div><div class="tl-meta">Carlos · 52 min</div></div><span class="chip chip-red" style="font-size:9px;">Expedite</span></div>
+              <div class="table-list-item"><div class="tl-dot" style="background:var(--accent);"></div><div class="tl-info"><div class="tl-name">Table 5</div><div class="tl-meta">Maria · 31 min</div></div><span class="chip chip-green" style="font-size:9px;">Food ready</span></div>
+              <div class="table-list-item"><div class="tl-dot" style="background:var(--blue);"></div><div class="tl-info"><div class="tl-name">Table 7</div><div class="tl-meta">Maria · 18 min</div></div><span class="chip chip-blue" style="font-size:9px;">Tab open</span></div>
+              <div class="table-list-item"><div class="tl-dot" style="background:var(--amber);"></div><div class="tl-info"><div class="tl-name">Table 9</div><div class="tl-meta">Jordan · 44 min</div></div><span class="chip chip-amber" style="font-size:9px;">Check</span></div>
+            </div>
+          </div>
+          <div style="${isBig?'display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;':'display:flex;flex-direction:column;gap:8px;'}">
+            <div class="card">
+              <div style="font-size:13px;font-weight:500;margin-bottom:8px;">Top items tonight</div>
+              ${rankItem(1,'Wagyu Burger',100,14,'$336')}${rankItem(2,'Lobster Bisque',78,11,'$154')}${rankItem(3,'Salmon Salad',64,9,'$234')}${rankItem(4,'Margarita',57,8,'$96')}${rankItem(5,'Wedge Salad',50,7,'$77')}
+              <div style="margin-top:8px;padding-top:8px;border-top:1px solid var(--border);font-size:11px;color:var(--red);display:flex;align-items:center;gap:5px;"><i class="ti ti-alert-triangle" style="font-size:12px"></i>Wagyu Burger · 2 remaining</div>
+            </div>
+            <div class="card">
+              <div style="font-size:13px;font-weight:500;margin-bottom:8px;">Staff on shift</div>
+              ${staffRow('MA','Maria','Server','6.5h','$142','amber')}${staffRow('CA','Carlos','Server','5.0h','$98','blue')}${staffRow('JO','Jordan','Server','4.5h','$76','purple')}${staffRow('KI','Kim','Bartender','5.5h','$114','')}${staffRow('DE','Dev','Kitchen','6.0h','—','')}
+            </div>
+            <div class="card">
+              <div style="font-size:13px;font-weight:500;margin-bottom:8px;">Exceptions</div>
+              ${excRow('comp','Comp · Wedge Salad','Maria · T7 · $11 · pending','Approve','var(--accent)')}
+              ${excRow('void','Void · Lobster Bisque','Carlos · T3 · $20 · approved','View','var(--text2)')}
+              ${excRow('disc','Discount · 20% off','Jordan · T9 · $12.50','View','var(--text2)')}
+              ${excRow('time','Late ticket · Table 3','52 min · no action','Review','var(--red)')}
+            </div>
+          </div>
+          <div class="ai-chat-box">
+            <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
+              <div style="width:26px;height:26px;border-radius:50%;background:var(--purple-light);display:flex;align-items:center;justify-content:center;flex-shrink:0;"><i class="ti ti-sparkles" style="font-size:13px;color:var(--purple)"></i></div>
+              <div style="font-size:12px;font-weight:500;">AI assistant</div>
+            </div>
+            <div class="ai-msg">Tonight is tracking <strong style="font-weight:500;">12% above</strong> last Tuesday. Peak at 8pm — 3 tables still open. Wagyu Burger has 2 left and is your top seller tonight — consider 86'ing it now.</div>
+            <div class="ai-quick-chips">
+              <div class="ai-quick" onclick="alert('86 the Wagyu Burger for tonight — confirm?')">86 Wagyu now</div>
+              <div class="ai-quick">Why is tonight up?</div>
+              <div class="ai-quick">Staff summary</div>
+              <div class="ai-quick">Prep for tomorrow</div>
+            </div>
+            <div class="ai-input-row">
+              <input class="ai-input" placeholder="Ask anything about tonight…" />
+              <button class="ai-send-btn"><i class="ti ti-send" style="font-size:13px"></i></button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>`;
+}
+
+function metricCard(label, value, delta, dir) {
+  return `<div class="metric-card"><div class="mc-label">${label}</div><div class="mc-value">${value}</div><div class="mc-delta ${dir}">${delta}</div></div>`;
+}
+
+function rankItem(n, name, pct, qty, rev) {
+  return `<div class="item-rank-row"><div class="rank-num">${n}</div><div class="rank-name">${name}</div><div class="rank-bar-wrap"><div class="rank-bar" style="width:${pct}%"></div></div><div class="rank-val" style="font-size:10px;color:var(--text2);">${qty}</div><div class="rank-val">${rev}</div></div>`;
+}
+
+function staffRow(init, name, role, hrs, tips, color) {
+  return `<div style="display:flex;align-items:center;gap:8px;padding:5px 0;border-bottom:1px solid var(--border);">
+    <div style="width:26px;height:26px;border-radius:50%;background:${color?'var(--'+color+'-light)':'var(--surface2)'};border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:500;color:${color?'var(--'+color+')':'var(--text2)'};flex-shrink:0;">${init}</div>
+    <div style="flex:1;"><div style="font-size:12px;font-weight:500;">${name}</div><div style="font-size:10px;color:var(--text2);">${role}</div></div>
+    <span style="font-size:11px;color:var(--text2);">${hrs}</span>
+    <span style="font-size:11px;font-weight:500;color:${tips==='—'?'var(--text2)':'var(--accent)'};">${tips}</span>
+  </div>`;
+}
+
+function excRow(type, name, meta, action, actionColor) {
+  const icons = {comp:'ti-ticket',void:'ti-trash',disc:'ti-discount',time:'ti-clock'};
+  const bgColors = {comp:'var(--red-light)',void:'var(--amber-light)',disc:'var(--blue-light)',time:'var(--red-light)'};
+  const iconColors = {comp:'var(--red)',void:'var(--amber)',disc:'var(--blue)',time:'var(--red)'};
+  return `<div class="exc-row">
+    <div class="exc-icon-sm" style="background:${bgColors[type]};"><i class="ti ${icons[type]}" style="font-size:13px;color:${iconColors[type]}"></i></div>
+    <div style="flex:1;min-width:0;"><div class="exc-name">${name}</div><div class="exc-meta">${meta}</div></div>
+    <span style="font-size:11px;font-weight:500;cursor:pointer;color:${actionColor};flex-shrink:0;">${action}</span>
+  </div>`;
+}
+
+function renderInsights() {
+  const isBig = currentDevice === 'laptop';
+  const sidebar = isBig ? `<div class="sidebar">${operatorSidebar('insights')}</div>` : '';
+  const wrap = isBig ? 'two-col' : '';
+  return `<div class="${wrap}" style="height:100%;min-height:100%;">
+    ${sidebar}
+    <div class="main-area">
+      <div class="dash-header"><div class="dash-title">Insights · This week</div></div>
+      <div class="main-scroll">
+        <div class="dash-content">
+          <div class="metrics-row ${isBig?'four':''}">
+            ${metricCard('Revenue this week','$31,420','↑ 9% vs last week','up')}
+            ${metricCard('Avg ticket','$57.70','↑ $4.20 vs last month','up')}
+            ${metricCard('Loyalty members','847','↑ 34 this week · 62% return','up')}
+            ${metricCard('Table turn time','52 min','↑ 4 min vs 48 target','down')}
+          </div>
+          <div class="card">
+            <div style="font-size:13px;font-weight:500;margin-bottom:8px;">Revenue · last 7 days</div>
+            <div class="mini-chart" style="height:80px;">
+              ${[60,95,45,38,42,55,72].map((h,i)=>`<div class="chart-bar ${i===6?'today':''}" style="height:${h}%;background:${i===6?'var(--accent)':'#C0DD97'};"></div>`).join('')}
+            </div>
+            <div class="chart-labels">${['Fri','Sat','Sun','Mon','Tue','Wed','Thu'].map(l=>`<div class="chart-lbl">${l}</div>`).join('')}</div>
+          </div>
+          <div style="${isBig?'display:grid;grid-template-columns:1fr 1fr;gap:10px;':''}">
+            <div class="card">
+              <div style="font-size:13px;font-weight:500;margin-bottom:10px;">Loyalty program</div>
+              <div style="font-size:22px;font-weight:600;">847 <span style="font-size:14px;color:var(--text2);font-weight:400;">members</span></div>
+              <div class="sec-label" style="margin-top:10px;">New this week (goal: 50)</div>
+              <div class="horiz-bar"><div class="horiz-fill" style="width:68%;"></div></div>
+              <div style="display:flex;justify-content:space-between;font-size:10px;color:var(--text2);margin-top:3px;"><span>+34 members</span><span>68% of goal</span></div>
+              <div class="sec-label" style="margin-top:10px;">Return rate (industry avg: 40%)</div>
+              <div class="horiz-bar"><div class="horiz-fill" style="width:62%;background:var(--blue);"></div></div>
+              <div style="display:flex;justify-content:space-between;font-size:10px;color:var(--text2);margin-top:3px;"><span>62% return</span><span style="color:var(--accent);font-weight:500;">↑ 22% above avg</span></div>
+              <div style="margin-top:10px;padding-top:10px;border-top:1px solid var(--border);">
+                <div style="font-size:11px;color:var(--text2);">Marketing subscribers</div>
+                <div style="font-size:16px;font-weight:600;margin:3px 0;">312</div>
+                <div style="font-size:11px;color:var(--purple);cursor:pointer;">Send a special offer →</div>
+              </div>
+            </div>
+            <div class="card">
+              <div style="font-size:13px;font-weight:500;margin-bottom:10px;">Week highlights</div>
+              <div style="display:flex;flex-direction:column;gap:8px;">
+                ${[['Best day','Saturday · $8,241','var(--accent)'],['Slowest day','Monday · $3,102','var(--text2)'],['Top item','Wagyu Burger · 84 sold','var(--text)'],['Best server','Maria · $14,220 sales','var(--text)'],['Avg tip rate','17.5%','var(--text)']].map(([l,v,c])=>`<div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--border);"><span style="font-size:12px;color:var(--text2);">${l}</span><span style="font-size:12px;font-weight:500;color:${c};">${v}</span></div>`).join('')}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>`;
+}
+
+function renderReports() {
+  const isBig = currentDevice === 'laptop';
+  const sidebar = isBig ? `<div class="sidebar">${operatorSidebar('reports')}</div>` : '';
+  const wrap = isBig ? 'two-col' : '';
+  return `<div class="${wrap}" style="height:100%;min-height:100%;">
+    ${sidebar}
+    <div class="main-area">
+      <div class="dash-header">
+        <div class="dash-title">Reports</div>
+        <div style="display:flex;gap:6px;align-items:center;">
+          <div style="display:flex;gap:4px;">
+            ${['Today','Yesterday','This week','This month'].map((p,i)=>`<div style="padding:4px 9px;border-radius:var(--r-full);font-size:11px;cursor:pointer;border:1px solid ${i===0?'var(--text)':'var(--border)'};background:${i===0?'var(--text)':'var(--surface2)'};color:${i===0?'white':'var(--text2)'};" onclick="this.parentNode.querySelectorAll('div').forEach(d=>{d.style.background='var(--surface2)';d.style.color='var(--text2)';d.style.borderColor='var(--border)';});this.style.background='var(--text)';this.style.color='white';this.style.borderColor='var(--text)';">${p}</div>`).join('')}
+          </div>
+          <div style="display:flex;align-items:center;gap:4px;padding:5px 10px;border-radius:var(--r-md);border:1px solid var(--border);background:var(--surface2);font-size:12px;color:var(--text2);cursor:pointer;"><i class="ti ti-download" style="font-size:13px"></i>Export</div>
+        </div>
+      </div>
+      <div style="padding:10px 14px 4px;">
+        <div class="report-tabs" id="report-tabs">
+          ${['Daily summary','Item mix','Staff','Exceptions','Payments'].map((t,i)=>`<div class="rtab ${i===0?'on':''}" onclick="switchReport(this,'${t.toLowerCase().replace(/ /g,'-')}')">${t}</div>`).join('')}
+        </div>
+      </div>
+      <div class="main-scroll">
+        <div id="report-content" style="padding:10px 14px;">
+          ${renderDailySummary()}
+        </div>
+      </div>
+    </div>
+  </div>`;
+}
+
+function renderDailySummary() {
+  return `
+    <div class="metrics-row" style="margin-bottom:10px;">
+      ${metricCard('Revenue','$4,847','↑ 12% vs last Tue','up')}
+      ${metricCard('Covers','84','Avg $57.70 / cover','up')}
+      ${metricCard('Net tips','$847','17.5% avg tip rate','up')}
+      ${metricCard('Comps+voids','−$250','6.4% of gross · above 3% target','down')}
+    </div>
+    <div class="card" style="margin-bottom:10px;">
+      <div style="font-size:13px;font-weight:500;margin-bottom:8px;">Revenue breakdown</div>
+      <table class="report-table">
+        <tr><td>Food sales</td><td class="r">$3,412</td></tr>
+        <tr><td>Beverage sales</td><td class="r">$1,247</td></tr>
+        <tr><td class="muted">Tax collected</td><td class="r muted">$396</td></tr>
+        <tr><td class="muted">Comps / voids</td><td class="r" style="color:var(--red);">−$188</td></tr>
+        <tr><td class="muted">Discounts</td><td class="r" style="color:var(--red);">−$62</td></tr>
+        <tr style="font-weight:500;border-top:1px solid var(--border);"><td style="padding-top:8px;">Net revenue</td><td class="r" style="padding-top:8px;">$4,847</td></tr>
+      </table>
+    </div>
+    <div class="card">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;"><div style="font-size:13px;font-weight:500;">End of day</div></div>
+      <div style="display:flex;gap:7px;">
+        <button style="flex:1;padding:9px;border-radius:var(--r-md);border:none;background:var(--text);color:white;font-size:12px;font-weight:500;cursor:pointer;font-family:var(--font);">Close day</button>
+        <button style="flex:1;padding:9px;border-radius:var(--r-md);border:1px solid var(--border);background:var(--surface2);font-size:12px;color:var(--text2);cursor:pointer;font-family:var(--font);">Email report</button>
+      </div>
+    </div>`;
+}
+
+function renderItemMix() {
+  return `
+    <div class="card">
+      <div style="font-size:13px;font-weight:500;margin-bottom:8px;">Item mix tonight</div>
+      <table class="report-table">
+        <thead><tr><th>#</th><th>Item</th><th class="r">Qty</th><th class="r">Revenue</th><th class="r">Status</th></tr></thead>
+        <tbody>
+          <tr><td class="muted">1</td><td>Wagyu Burger</td><td class="r">14</td><td class="r">$336</td><td class="r"><span class="chip chip-red" style="font-size:9px;">2 left</span></td></tr>
+          <tr><td class="muted">2</td><td>Salmon Salad</td><td class="r">9</td><td class="r">$234</td><td class="r"><span class="chip chip-green" style="font-size:9px;">Available</span></td></tr>
+          <tr><td class="muted">3</td><td>Lobster Bisque</td><td class="r">11</td><td class="r">$154</td><td class="r"><span class="chip chip-green" style="font-size:9px;">Available</span></td></tr>
+          <tr><td class="muted">4</td><td>Margarita</td><td class="r">8</td><td class="r">$96</td><td class="r"><span class="chip chip-green" style="font-size:9px;">Available</span></td></tr>
+          <tr><td class="muted">5</td><td>Wedge Salad</td><td class="r">7</td><td class="r">$77</td><td class="r"><span class="chip chip-green" style="font-size:9px;">Available</span></td></tr>
+          <tr><td class="muted">6</td><td>Pan Seared Salmon</td><td class="r muted">0</td><td class="r muted">—</td><td class="r"><span class="chip chip-gray" style="font-size:9px;">86'd</span></td></tr>
+        </tbody>
+      </table>
+    </div>`;
+}
+
+function renderStaffReport() {
+  return `
+    <div class="metrics-row" style="margin-bottom:10px;">
+      ${metricCard('Staff on today','5','28 total hours','neutral')}
+      ${metricCard('Labor cost','$1,357','28% of revenue','up')}
+      ${metricCard('Tips distributed','$847','17.5% avg rate','up')}
+      ${metricCard('OT risk','1','Maria · 6.5h','down')}
+    </div>
+    <div class="card">
+      <table class="report-table">
+        <thead><tr><th>Name</th><th>Role</th><th class="r">Hours</th><th class="r">Sales</th><th class="r">Tips</th></tr></thead>
+        <tbody>
+          <tr><td style="font-weight:500;">Maria</td><td class="muted">Server</td><td class="r">6.5h</td><td class="r">$2,104</td><td class="r" style="color:var(--accent);">$142</td></tr>
+          <tr><td style="font-weight:500;">Carlos</td><td class="muted">Server</td><td class="r">5.0h</td><td class="r">$1,420</td><td class="r" style="color:var(--accent);">$98</td></tr>
+          <tr><td style="font-weight:500;">Jordan</td><td class="muted">Server</td><td class="r">4.5h</td><td class="r">$890</td><td class="r" style="color:var(--accent);">$76</td></tr>
+          <tr><td style="font-weight:500;">Kim</td><td class="muted">Bartender</td><td class="r">5.5h</td><td class="r">$433</td><td class="r" style="color:var(--accent);">$114</td></tr>
+          <tr><td style="font-weight:500;">Dev</td><td class="muted">Kitchen</td><td class="r">7.0h</td><td class="r muted">—</td><td class="r muted">—</td></tr>
+        </tbody>
+      </table>
+      <div style="margin-top:8px;"><button style="width:100%;padding:8px;border-radius:var(--r-md);border:1px solid var(--border);background:var(--surface2);font-size:11px;color:var(--text2);cursor:pointer;font-family:var(--font);">Export to payroll →</button></div>
+    </div>`;
+}
+
+function renderExceptions() {
+  return `
+    <div class="metrics-row" style="margin-bottom:10px;">
+      ${metricCard('Total exceptions','8','↑ 3 vs last Tue','down')}
+      ${metricCard('Value impacted','$312','6.4% of gross · target 3%','down')}
+      ${metricCard('Pending approval','1','Comp · $11','down')}
+    </div>
+    <div class="card">
+      <table class="report-table">
+        <thead><tr><th>Time</th><th>Type</th><th>Item</th><th>Staff</th><th class="r">Amount</th><th class="r">Status</th></tr></thead>
+        <tbody>
+          <tr><td class="muted">9:14pm</td><td><span class="chip chip-amber" style="font-size:9px;">Comp</span></td><td>Wedge Salad</td><td>Maria</td><td class="r" style="color:var(--red);">−$11</td><td class="r"><span class="chip chip-red" style="font-size:9px;">Pending</span></td></tr>
+          <tr><td class="muted">8:42pm</td><td><span class="chip chip-red" style="font-size:9px;">Void</span></td><td>Lobster Bisque</td><td>Carlos</td><td class="r" style="color:var(--red);">−$20</td><td class="r"><span class="chip chip-green" style="font-size:9px;">Approved</span></td></tr>
+          <tr><td class="muted">8:11pm</td><td><span class="chip chip-blue" style="font-size:9px;">Discount</span></td><td>Full check</td><td>Jordan</td><td class="r" style="color:var(--red);">−$12.50</td><td class="r"><span class="chip chip-green" style="font-size:9px;">Approved</span></td></tr>
+          <tr><td class="muted">7:55pm</td><td><span class="chip chip-red" style="font-size:9px;">Void</span></td><td>Wagyu Burger</td><td>Maria</td><td class="r" style="color:var(--red);">−$24</td><td class="r"><span class="chip chip-green" style="font-size:9px;">Approved</span></td></tr>
+        </tbody>
+      </table>
+    </div>`;
+}
+
+function renderPaymentsReport() {
+  return `
+    <div class="metrics-row" style="margin-bottom:10px;">
+      ${metricCard('Total processed','$4,847','68 transactions','neutral')}
+      ${metricCard('Processing fees','$131','2.7% avg rate','neutral')}
+      ${metricCard('Avg transaction','$71.28','↑ $4.10 vs last Tue','up')}
+      ${metricCard('Refunds','$0','0 today','neutral')}
+    </div>
+    <div class="card">
+      <div style="font-size:13px;font-weight:500;margin-bottom:8px;">Method breakdown</div>
+      <table class="report-table">
+        <tr><td>Card (tap/chip/swipe)</td><td class="r">62%</td><td class="r muted">$3,005</td></tr>
+        <tr><td>Apple / Google Pay</td><td class="r">22%</td><td class="r muted">$1,066</td></tr>
+        <tr><td>Tab auto-close</td><td class="r">10%</td><td class="r muted">$485</td></tr>
+        <tr><td>Cash</td><td class="r">6%</td><td class="r muted">$291</td></tr>
+        <tr style="font-weight:500;border-top:1px solid var(--border);"><td style="padding-top:7px;">Total fees</td><td class="r" style="padding-top:7px;">$131</td><td></td></tr>
+      </table>
+    </div>`;
+}
+
+function renderFloorMap() {
+  const isBig = currentDevice === 'laptop';
+  const sidebar = isBig ? `<div class="sidebar">${operatorSidebar('floor-map')}</div>` : '';
+  const wrap = isBig ? 'two-col' : '';
+  return `<div class="${wrap}" style="height:100%;min-height:100%;">
+    ${sidebar}
+    <div class="main-area">
+      <div class="dash-header">
+        <div class="dash-title">Floor map · Main room</div>
+        <div style="display:flex;gap:6px;">
+          <span class="chip chip-green"><i class="ti ti-users" style="font-size:11px"></i> 28 covers</span>
+          <span class="chip chip-amber"><i class="ti ti-clock" style="font-size:11px"></i> 3 need attention</span>
+        </div>
+      </div>
+      <div style="display:flex;gap:4px;padding:8px 12px;border-bottom:1px solid var(--border);overflow-x:auto;flex-wrap:wrap;">
+        ${[['var(--surface)','var(--border)','Available'],['var(--blue-light)','#93c5fd','Seated'],['#f0fdf4','#86efac','Ordering'],['var(--accent-light)','var(--accent-mid)','Food ready'],['var(--amber-light)','#fbbf24','Check'],['var(--purple-light)','#c4b5fd','Reserved']].map(([bg,border,label])=>`<div style="display:flex;align-items:center;gap:4px;font-size:11px;color:var(--text2);margin-right:8px;"><div style="width:10px;height:10px;border-radius:3px;background:${bg};border:1px solid ${border};"></div>${label}</div>`).join('')}
+      </div>
+      <div class="main-scroll">
+        <div style="padding:10px 12px;">
+          <div class="lp-floor-grid">
+            ${floorTable('T1','3 covers','ordering','8 min','ok')}
+            ${floorTable('T2','4 covers','available','—','')}
+            ${floorTable('T3','4 covers','ordering','52 min','late',true)}
+            ${floorTable('T4','2 covers','available','—','')}
+            ${floorTable('T5','6 covers','food-ready','31 min','ok')}
+            ${floorTable('T6','4 covers','reserved','8:30 PM','purple')}
+            ${floorTable('T7','2 covers','seated','18 min','ok')}
+            ${floorTable('T8','4 covers','available','—','')}
+            ${floorTable('T9','2 covers','check-time','44 min','late')}
+            ${floorTable('T11','5 covers','ordering','12 min','ok')}
+          </div>
+        </div>
+        <div class="floor-detail" id="floor-detail">
+          <div style="font-size:13px;font-weight:500;margin-bottom:6px;" id="fd-title">Select a table</div>
+          <div style="font-size:12px;color:var(--text2);" id="fd-meta">Tap any table above to see its status and order details.</div>
+        </div>
+      </div>
+    </div>
+  </div>`;
+}
+
+function floorTable(num, covers, state, time, timeClass, expedite=false) {
+  const stateColors = {'available':'available','seated':'seated','ordering':'ordering','food-ready':'food-ready','check-time':'check-time','reserved':'reserved'};
+  return `<div class="floor-table ${stateColors[state]}" onclick="selectFloorTable('${num}','${covers}','${state}','${time}')">
+    ${expedite?'<div style="width:8px;height:8px;border-radius:50%;background:var(--red);margin-bottom:2px;animation:pulse 1.5s infinite;"></div>':''}
+    <div class="ft-num">${num}</div>
+    <div class="ft-covers">${covers}</div>
+    <div class="ft-time" style="color:${timeClass==='late'?'var(--red)':timeClass==='ok'?'var(--accent)':timeClass==='purple'?'var(--purple)':'var(--text2)'};">${time}</div>
+  </div>`;
+}
+
+function operatorSidebar(active) {
+  const items = [
+    {id:'dashboard',icon:'ti-layout-dashboard',label:'Today'},
+    {id:'insights',icon:'ti-trending-up',label:'Insights'},
+    {id:'reports',icon:'ti-report',label:'Reports'},
+    {id:'floor-map',icon:'ti-layout-grid',label:'Floor map'},
+    {id:'staff-order',icon:'ti-users',label:'Staff orders'},
+    {id:'station',icon:'ti-chef-hat',label:'Station display'},
+  ];
+  return `
+    <div class="sidebar-brand">cours<span style="color:var(--amber);">ly</span></div>
+    <div class="sidebar-nav">
+      ${items.map(i=>`<div class="nav-item ${i.id===active?'on':''}" onclick="goTo('${i.id}')"><i class="ti ${i.icon}"></i>${i.label}</div>`).join('')}
+    </div>
+    <div class="sidebar-footer">
+      <div style="display:flex;align-items:center;gap:8px;">
+        <div style="width:30px;height:30px;border-radius:50%;background:var(--accent-light);border:1px solid var(--accent-mid);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:500;color:var(--accent);flex-shrink:0;">JG</div>
+        <div><div style="font-size:12px;font-weight:500;">Graham</div><div style="font-size:10px;color:var(--text2);">Owner</div></div>
+      </div>
+    </div>`;
+}
+
+function renderOnboard() {
+  return `
+    <div class="page active" style="min-height:100%;">
+      <div class="status-bar"><span>9:41</span><span></span></div>
+      <div style="padding:12px 16px;border-bottom:1px solid var(--border);">
+        <div style="font-size:18px;font-weight:600;color:var(--accent);">cours<span style="color:var(--amber);">ly</span></div>
+        <div style="font-size:12px;color:var(--text2);margin-top:2px;">Set up your restaurant in 30 minutes</div>
+      </div>
+      <div style="flex:1;overflow-y:auto;padding:0 16px 80px;">
+        <div style="display:flex;gap:4px;padding:16px 0 12px;">
+          <div style="width:18px;height:5px;border-radius:3px;background:var(--accent);"></div>
+          <div style="width:6px;height:5px;border-radius:3px;background:var(--border2);"></div>
+          <div style="width:6px;height:5px;border-radius:3px;background:var(--border2);"></div>
+          <div style="width:6px;height:5px;border-radius:3px;background:var(--border2);"></div>
+        </div>
+        <div style="font-size:40px;text-align:center;padding:8px 0;">🍽️</div>
+        <div style="font-size:20px;font-weight:600;text-align:center;margin-bottom:6px;">Welcome to Coursly</div>
+        <div style="font-size:13px;color:var(--text2);text-align:center;line-height:1.5;margin-bottom:20px;">Let's get your restaurant set up. We'll import your menu automatically — it takes about 60 seconds.</div>
+        <div class="input-label">Restaurant name</div>
+        <input class="input-field" placeholder="The Rusty Anchor" style="margin-bottom:10px;" />
+        <div class="input-label">Cuisine type</div>
+        <input class="input-field" placeholder="American · Seafood · Bar" style="margin-bottom:10px;" />
+        <div class="input-label">Service style</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:10px;">
+          ${['Full service','Fast casual','Bar / counter','Café / bakery'].map((s,i)=>`<div style="padding:10px;border-radius:var(--r-md);border:1.5px solid ${i===0?'var(--accent)':'var(--border)'};background:${i===0?'var(--accent-light)':'var(--surface)'};font-size:12px;font-weight:${i===0?'500':'400'};color:${i===0?'var(--accent)':'var(--text2)'};text-align:center;cursor:pointer;">${s}</div>`).join('')}
+        </div>
+        <div class="input-label">Import your menu</div>
+        <div class="upload-box" onclick="goTo('customer-menu')">
+          <div style="font-size:28px;margin-bottom:8px;">📄</div>
+          <div style="font-size:13px;font-weight:500;color:var(--text);margin-bottom:4px;">Upload menu PDF, photo, or URL</div>
+          <div style="font-size:11px;color:var(--text2);">Our AI extracts items, prices, and categories in ~60 seconds</div>
+        </div>
+        <div style="text-align:center;margin:10px 0;font-size:12px;color:var(--text2);">— or —</div>
+        <button style="width:100%;padding:10px;border-radius:var(--r-md);border:1px solid var(--border);background:var(--surface2);font-size:12px;color:var(--text2);cursor:pointer;font-family:var(--font);">I'll build my menu manually</button>
+      </div>
+      <div class="bottom-bar">
+        <button class="btn-primary" onclick="goTo('customer-menu')"><span>Continue</span><i class="ti ti-arrow-right"></i></button>
+      </div>
+    </div>`;
+}
+
+// ── BEHAVIOR ──
+function attachBehavior(screen) {
+  if (screen === 'item-detail') { qty = 1; addOnTotal = 0; ingStates = {}; }
+}
+
+let activeIngId = null;
+function showIngPop(id, label, canSide) {
+  const popup = document.getElementById('ing-popup');
+  if (!popup) return;
+  if (activeIngId === id) { popup.style.display = 'none'; activeIngId = null; return; }
+  activeIngId = id;
+  popup.innerHTML = `
+    <div style="font-size:10px;color:var(--text2);padding:4px 8px 3px;">${label}</div>
+    ${canSide?`<div style="display:flex;align-items:center;gap:6px;padding:5px 8px;border-radius:6px;font-size:11px;color:var(--text);cursor:pointer;" onmouseenter="this.style.background='var(--surface2)'" onmouseleave="this.style.background=''" onclick="applyIng('side','${id}')"><i class="ti ti-arrow-right" style="font-size:12px;color:var(--amber)"></i>On the side</div>`:''}
+    <div style="display:flex;align-items:center;gap:6px;padding:5px 8px;border-radius:6px;font-size:11px;color:var(--red);cursor:pointer;" onmouseenter="this.style.background='var(--surface2)'" onmouseleave="this.style.background=''" onclick="applyIng('removed','${id}')"><i class="ti ti-x" style="font-size:12px"></i>Remove</div>
+    <div style="display:flex;align-items:center;gap:6px;padding:5px 8px;border-radius:6px;font-size:11px;color:var(--text2);cursor:pointer;" onmouseenter="this.style.background='var(--surface2)'" onmouseleave="this.style.background=''" onclick="applyIng('normal','${id}')"><i class="ti ti-refresh" style="font-size:12px"></i>Keep as is</div>`;
+  popup.style.display = 'block';
+}
+
+function applyIng(state, id) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.classList.remove('removed', 'side');
+  if (state === 'removed') el.classList.add('removed');
+  if (state === 'side') el.classList.add('side');
+  const popup = document.getElementById('ing-popup');
+  if (popup) popup.style.display = 'none';
+  activeIngId = null;
+  updateIngSummary();
+}
+
+function updateIngSummary() {
+  const grid = document.getElementById('ing-grid');
+  if (!grid) return;
+  const removed = [], sides = [];
+  grid.querySelectorAll('.ing-chip').forEach(c => {
+    const t = c.textContent.trim();
+    if (c.classList.contains('removed')) removed.push(t);
+    if (c.classList.contains('side')) sides.push(t);
+  });
+  const s = document.getElementById('ing-summary');
+  if (!s) return;
+  let txt = '';
+  if (removed.length) txt += removed.length + ' removed';
+  if (sides.length) txt += (txt?' · ':'')+sides.length+' on the side';
+  s.textContent = txt;
+}
+
+function selTemp(el) {
+  const container = document.getElementById('temps');
+  if (!container) return;
+  container.querySelectorAll('.radio').forEach(r => r.classList.remove('on'));
+  el.classList.add('on');
+}
+
+function togChk(el, price) {
+  el.classList.toggle('on');
+  if (el.classList.contains('on')) { el.textContent = '✓'; addOnTotal += price; }
+  else { el.textContent = ''; addOnTotal -= price; }
+  updateDetailPrice();
+}
+
+function changeQty(d) {
+  qty = Math.max(1, qty + d);
+  const qd = document.getElementById('qty-display');
+  if (qd) qd.textContent = qty;
+  updateDetailPrice();
+}
+
+function updateDetailPrice() {
+  const total = (26 + addOnTotal) * qty;
+  const dp = document.getElementById('detail-price');
+  const abp = document.getElementById('add-btn-price');
+  if (dp) dp.textContent = '$' + total;
+  if (abp) abp.textContent = '$' + total + ' →';
+}
+
+function showPairSheet(emoji, name, desc, price) {
+  const sheet = document.getElementById('pair-sheet');
+  if (!sheet) return;
+  document.getElementById('ps-emoji').textContent = emoji;
+  document.getElementById('ps-name').textContent = name;
+  document.getElementById('ps-desc').textContent = desc;
+  document.getElementById('ps-price').textContent = price;
+  sheet.style.display = 'flex';
+}
+
+function selCourse(el) {
+  const row = el.parentNode;
+  row.querySelectorAll('.course-btn').forEach(b => b.classList.remove('on'));
+  el.classList.add('on');
+}
+
+function selTip(pct, base, el) {
+  tipPct = pct;
+  const grid = document.getElementById('tip-grid');
+  if (grid) grid.querySelectorAll('.tip-btn').forEach(b => b.classList.remove('on'));
+  if (el) el.classList.add('on');
+  const tip = parseFloat((base * pct / 100).toFixed(2));
+  const grand = parseFloat((base + tip).toFixed(2));
+  const ta = document.getElementById('tip-amount');
+  const gt = document.getElementById('grand-total');
+  const tbt = document.getElementById('tip-btn-total');
+  if (ta) ta.textContent = '$' + tip.toFixed(2);
+  if (gt) gt.textContent = '$' + grand.toFixed(2);
+  if (tbt) tbt.textContent = '$' + grand.toFixed(2) + ' →';
+}
+
+function customTipInput(base, val) {
+  const grid = document.getElementById('tip-grid');
+  if (grid) grid.querySelectorAll('.tip-btn').forEach(b => b.classList.remove('on'));
+  const tip = parseFloat(val) || 0;
+  const grand = parseFloat((base + tip).toFixed(2));
+  const ta = document.getElementById('tip-amount');
+  const gt = document.getElementById('grand-total');
+  if (ta) ta.textContent = '$' + tip.toFixed(2);
+  if (gt) gt.textContent = '$' + grand.toFixed(2);
+}
+
+function toggleKdsItem(el) {
+  el.classList.toggle('done');
+  const name = el.querySelector('.titem-name');
+  if (name) name.classList.toggle('done');
+  const check = el.querySelector('.tcheck');
+  if (check) { check.classList.toggle('done'); check.textContent = check.classList.contains('done') ? '✓' : ''; }
+}
+
+function bumpTicket(id) {
+  const t = document.getElementById(id);
+  if (t) { t.style.opacity = '0'; t.style.transition = 'opacity 0.3s'; setTimeout(() => t.remove(), 300); }
+}
+
+function switchReport(el, type) {
+  document.querySelectorAll('.rtab').forEach(t => t.classList.remove('on'));
+  el.classList.add('on');
+  const content = document.getElementById('report-content');
+  if (!content) return;
+  const renders = {
+    'daily-summary': renderDailySummary,
+    'item-mix': renderItemMix,
+    'staff': renderStaffReport,
+    'exceptions': renderExceptions,
+    'payments': renderPaymentsReport,
+  };
+  content.innerHTML = (renders[type] || renderDailySummary)();
+}
+
+let pinEntry = [];
+function showPinModal() {
+  const modal = document.getElementById('pin-modal');
+  if (modal) { modal.style.display = 'flex'; pinEntry = []; updatePinDots(); }
+}
+function pinKey(k) {
+  if (k === '✕') { document.getElementById('pin-modal').style.display = 'none'; return; }
+  if (k === '↩') { pinEntry.pop(); updatePinDots(); return; }
+  if (pinEntry.length >= 4) return;
+  pinEntry.push(k);
+  updatePinDots();
+  if (pinEntry.length === 4) {
+    setTimeout(() => { document.getElementById('pin-modal').style.display = 'none'; pinEntry = []; }, 400);
+  }
+}
+function updatePinDots() {
+  const dots = document.querySelectorAll('#pin-dots > div');
+  dots.forEach((d, i) => {
+    d.style.background = i < pinEntry.length ? 'var(--accent)' : 'var(--surface2)';
+    d.style.borderColor = i < pinEntry.length ? 'var(--accent)' : 'var(--border2)';
+  });
+}
+
+function selectFloorTable(num, covers, state, time) {
+  const title = document.getElementById('fd-title');
+  const meta = document.getElementById('fd-meta');
+  if (title) title.textContent = `Table ${num} · ${state.replace('-',' ')}`;
+  if (meta) meta.innerHTML = `${covers} · ${time}<div style="margin-top:6px;display:flex;gap:6px;">
+    <div style="padding:6px 10px;border-radius:var(--r-md);border:none;background:var(--text);color:white;font-size:11px;font-weight:500;cursor:pointer;font-family:var(--font);" onclick="goTo('staff-order')">View order</div>
+    <div style="padding:6px 10px;border-radius:var(--r-md);border:1px solid var(--border);background:var(--surface2);font-size:11px;cursor:pointer;font-family:var(--font);">Add note</div>
+    <div style="padding:6px 10px;border-radius:var(--r-md);border:1px solid var(--border);background:var(--surface2);font-size:11px;cursor:pointer;font-family:var(--font);">Transfer</div>
+  </div>`;
+}
+
+document.addEventListener('click', e => {
+  if (!e.target.closest('.ing-chip') && !e.target.closest('#ing-popup')) {
+    const popup = document.getElementById('ing-popup');
+    if (popup) popup.style.display = 'none';
+    activeIngId = null;
+  }
+});
+</script>
+</body>
+</html>
